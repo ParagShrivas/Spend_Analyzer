@@ -1,0 +1,33 @@
+/* Sidebar.css */
+
+:root {
+  --primary-sky: #0ea5e9;
+  --secondary-sky: #38bdf8;
+  --light-sky: #7dd3fc;
+
+  --white: #ffffff;
+  --body-bg: #f4f9ff;
+
+  --shadow: 0 10px 30px rgba(14, 165, 233, 0.25);
+  --white-shadow: 0 8px 20px rgba(255, 255, 255, 0.4);
+
+  --input:#f1f5f9;
+  
+  --radius-large: 40px;
+  --radius-medium: 18px;
+  --radius-small: 10px;
+
+  --transition: 0.3s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: var(--body-bg);
+}
+
