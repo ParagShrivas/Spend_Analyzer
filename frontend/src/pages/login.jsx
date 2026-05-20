@@ -2,21 +2,62 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/login.css";
+import Toast from "../components/toast";
 
 const Login = () => {
-     const [email, setEmail] = React.useState("");
-     const [password, setPassword] = React.useState("");
-     const [type, setType] = React.useState("password");
+     const [email, setEmail] = useState("");
+     const [password, setPassword] = useState("");
+     const [type, setType] = useState("password");
 
      const navigate = useNavigate();
+     const [showToast, setShowToast] = useState(false);
+     const [toastMessage, setToastMessage] = useState("");
+     const [toastMessageType, setToastMessageType] = useState("");
+     const [loading, setLoading] = useState(false);
 
-     const handleLogin = (e) => {
+     const handleLogin = async(e) => {
           e.preventDefault();
-          console.log(email, password);
 
+          setLoading(true);
+          try {
+               // API call to login the user
+               const response = await fetch("http://localhost:1500/user/login", {
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, password }),
+                    credentials: "include"
+               });
+
+               const data = await response.json();
+
+               if (response.ok) {
+                    setShowToast(true);
+                    setToastMessage("Login successful!");
+                    setToastMessageType("success");
+
+                    setTimeout(() => {
+                         setShowToast(false);
+                         navigate('/');
+                    }, 2000);
+
+               } else {
+                    setShowToast(true);
+                    setToastMessage(data.message);
+                    setToastMessageType("error");
+               }
+          } catch (err) {
+               setShowToast(true);
+               setToastMessage("An error occurred while logging in.");
+               setToastMessageType("error");
+          } finally {
+               setLoading(false);
+          }
      }
      return (
           <div className="login-page">
+               <Toast type={toastMessageType} message={toastMessage} show={showToast} setShow={setShowToast} />
                <div className="login-card">
 
                     {/* Top Icon */}
@@ -44,6 +85,7 @@ const Login = () => {
                                    placeholder="Email"
                                    value={email}
                                    onChange={(e) => setEmail(e.target.value)}
+                                   required
                               />
                          </div>
 
@@ -55,6 +97,7 @@ const Login = () => {
                                    placeholder="Password"
                                    value={password}
                                    onChange={(e) => setPassword(e.target.value)}
+                                   required
                               />
 
                               <i className={`fa-solid ${type === "password" ? "fa-eye-slash" : "fa-eye"} eye`} onClick={() => setType(type === "password" ? "text" : "password")}></i>
@@ -66,7 +109,19 @@ const Login = () => {
                          </div>
 
                          <button className="login-btn">
-                              Get Started
+                              {
+                                   loading ? (
+                                        <>
+                                             Logging in
+                                             {" "}
+                                             <i className="fa-solid fa-spinner fa-spin"></i>
+                                        </>
+                                   ) : (
+                                        <>
+                                             Get Started
+                                        </>
+                                   )
+                              }
                          </button>
 
                     </form>

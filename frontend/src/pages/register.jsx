@@ -1,31 +1,74 @@
 import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/login.css";
+import Toast from "../components/toast";
 
 const Register = () => {
 
-     const [name, setName] = React.useState("");
-     const [email, setEmail] = React.useState("");
-     const [password, setPassword] = React.useState("");
-     const [confirmPassword, setConfirmPassword] = React.useState("");
-     const [type, setType] = React.useState("password");
+     const [name, setName] = useState("");
+     const [email, setEmail] = useState("");
+     const [password, setPassword] = useState("");
+     const [confirmPassword, setConfirmPassword] = useState("");
+     const [type, setType] = useState("password");
+     const [showToast, setShowToast] = useState(false);
+     const [toastMessage, setToastMessage] = useState("");
+     const [toastMessageType, setToastMessageType] = useState("");
+     const [loading, setLoading] = useState(false);
 
      const navigate = useNavigate();
 
-     const handleRegister = (e) => {
+     const handleRegister = async (e) => {
           e.preventDefault();
 
           if (password !== confirmPassword) {
-               alert("Passwords do not match");
+               setShowToast(true);
+
+               setToastMessage("Passwords are not matching!");
+
+               setToastMessageType("info");
                return;
           }
 
-          console.log(name, email, password);
+          setLoading(true);
+          try {
+               // API call to register the user
+               const response = await fetch("http://localhost:1500/user/register", {
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                         name,
+                         email,
+                         password
+                    })
+               })
+
+               const data = await response.json();
+
+               if (response.ok) {
+                    setShowToast(true);
+                    setToastMessage("Registration successful! Please login.");
+                    setToastMessageType("success");
+               }
+
+               else if (!response.ok) {
+                    setShowToast(true);
+                    setToastMessage(data.message);
+                    setToastMessageType("info");
+               }
+          } catch (err) {
+               setShowToast(true);
+               setToastMessage("An error occurred while registering.");
+               setToastMessageType("error");
+          }
+          setLoading(false);
      };
 
      return (
           <div className="login-page">
-
+               <Toast type={toastMessageType} message={toastMessage} show={showToast} setShow={setShowToast} />
                <div className="login-card">
 
                     {/* Top Icon */}
@@ -130,7 +173,21 @@ const Register = () => {
 
                          {/* Button */}
                          <button className="login-btn">
-                              Create Account
+
+                              {
+                                   loading ? (
+                                        <>
+                                             Creating Account
+                                             {" "}
+                                             <i className="fa-solid fa-spinner fa-spin"></i>
+                                        </>
+                                   ) : (
+                                        <>
+                                             Create Account
+                                        </>
+                                   )
+                              }
+
                          </button>
 
                     </form>
