@@ -4,6 +4,7 @@ import Sidebar from './components/sideBar';
 import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
+import Expense from './pages/expense';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path='/' element={<Home/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
+        <Route path='/expenses' element={<Expense/>} />
       </Routes>
     </Router>
     </>

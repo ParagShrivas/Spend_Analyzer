@@ -21,7 +21,7 @@ const Sidebar = () => {
                               <span>Dashboard</span>
                          </div>
 
-                         <div className="menu-item">
+                         <div className="menu-item" onClick={() => navigate("/expenses")}>
                               <i className="fa-solid fa-money-bill-trend-up"></i>
                               <span>Expenses</span>
                          </div>
