@@ -16,6 +16,6 @@ app.use(
 );
 
 app.use('/user',userRoutes);
-app.use('/expense',expenseRoutes);
+app.use('/expense', expenseRoutes);
 
 module.exports = app;

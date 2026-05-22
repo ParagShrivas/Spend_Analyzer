@@ -35,7 +35,7 @@ const Expense = () => {
 
                const data = await response.json();
 
-               if (data.success) {
+               if (response.ok) {
                     alert("Expense Added Successfully");
                } else {
                     alert("Failed to add expense: " + data.message);
