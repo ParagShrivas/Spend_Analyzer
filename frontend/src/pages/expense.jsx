@@ -2,9 +2,11 @@
 
 import React from "react";
 import "../css/expense.css";
-import { useState } from "react";
+import Toast from "../components/toast";
+import { useState, useEffect } from "react";
 
 const Expense = () => {
+     const [expenses, setExpenses] = useState([]);
 
      const [title, setTitle] = useState("");
      const [amount, setAmount] = useState("");
@@ -12,6 +14,23 @@ const Expense = () => {
      const [date, setDate] = useState("");
      const [description, setDescription] = useState("");
      const [loading, setLoading] = useState(false);
+     const [showToast, setShowToast] = useState(false);
+     const [toastMessage, setToastMessage] = useState("");
+     const [toastMessageType, setToastMessageType] = useState("");
+
+     const categoryIcons = {
+          "Food & Dining": "🍔",
+          "Travel": "🚕",
+          "Shopping": "🛍️",
+          "Bills & Utilities": "⚡",
+          "Entertainment": "🎬",
+          "Healthcare": "🏥",
+          "Education": "📚",
+          "Groceries": "🛒",
+          "Salary": "💰",
+          "Investment": "📈",
+          "Other": "📦"
+     };
 
      const handleExpense = async (e) => {
           e.preventDefault();
@@ -36,9 +55,13 @@ const Expense = () => {
                const data = await response.json();
 
                if (response.ok) {
-                    alert("Expense Added Successfully");
+                    setShowToast(true);
+                    setToastMessage("Expense added successfully!");
+                    setToastMessageType("success");
                } else {
-                    alert("Failed to add expense: " + data.message);
+                    setShowToast(true);
+                    setToastMessage("Error adding expense!");
+                    setToastMessageType("error");
                }
           } catch (error) {
                console.error("Error adding expense:", error);
@@ -54,9 +77,38 @@ const Expense = () => {
           setDescription("");
      };
 
+     useEffect(() => {
+          const fetchExpenses = async () => {
+               // Fetch expenses and stats here
+               try {
+                    const response = await fetch("http://localhost:1500/expense/get", {
+                         method: "GET",
+                         headers: {
+                              "Content-Type": "application/json"
+                         },
+                         credentials: "include"
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                         setExpenses(data);
+                    } else {
+                         setShowToast(true);
+                         setToastMessage("Error fetching expenses!");
+                         setToastMessageType("error");
+                    }
+               } catch (error) {
+                    console.error("Error fetching data:", error);
+               }
+          }
+          fetchExpenses();
+     }, [])
+
      return (
 
           <div className="expense-page">
+               <Toast type={toastMessageType} message={toastMessage} show={showToast} setShow={setShowToast} />
 
                {/* Header */}
 
@@ -319,6 +371,7 @@ const Expense = () => {
 
                          </div>
 
+                         {/* Add Expense Form */}
                          <form onSubmit={handleExpense}>
 
                               {/* Title */}
@@ -513,63 +566,29 @@ const Expense = () => {
                          </div>
 
                          <div className="recent-list">
+                              {expenses.length > 0 ? (
+                                   expenses.slice(0, 5).map((expense, index) => (
+                                        <div className="recent-item" key={expense.expense_id || index}>
+                                             <div className="recent-left">
+                                                  <div className={`recent-icon ${index % 2 === 0 ? "orange" : "blue"}`}>
+                                                       {categoryIcons[expense.category] || "📦"}
+                                                  </div>
 
-                              <div className="recent-item">
+                                                  <div>
+                                                       <h4>{expense.title}</h4>
+                                                       <p>{expense.category}</p>
+                                                  </div>
+                                             </div>
 
-                                   <div className="recent-left">
-
-                                        <div className="recent-icon orange">
-                                             🍔
+                                             <div>
+                                                  <h4>₹ {expense.amount}</h4>
+                                                  <p>{new Date(expense.date).toLocaleDateString()}</p>
+                                             </div>
                                         </div>
-
-                                        <div>
-
-                                             <h4>Pizza Hut</h4>
-
-                                             <p>Food & Dining</p>
-
-                                        </div>
-
-                                   </div>
-
-                                   <div>
-
-                                        <h4>₹ 520</h4>
-
-                                        <p>22 May 2026</p>
-
-                                   </div>
-
-                              </div>
-
-                              <div className="recent-item">
-
-                                   <div className="recent-left">
-
-                                        <div className="recent-icon blue">
-                                             🚕
-                                        </div>
-
-                                        <div>
-
-                                             <h4>Uber Ride</h4>
-
-                                             <p>Travel</p>
-
-                                        </div>
-
-                                   </div>
-
-                                   <div>
-
-                                        <h4>₹ 340</h4>
-
-                                        <p>22 May 2026</p>
-
-                                   </div>
-
-                              </div>
-
+                                   ))
+                              ) : (
+                                   <p>No recent expenses found.</p>
+                              )}
                          </div>
 
                     </div>
@@ -620,37 +639,31 @@ const Expense = () => {
 
                                    <tbody>
 
-                                        <tr>
-
-                                             <td>01</td>
-
-                                             <td>Pizza Hut</td>
-
-                                             <td>
-                                                  Food
-                                             </td>
-
-                                             <td className="amount">
-                                                  ₹ 520
-                                             </td>
-
-                                             <td>
-                                                  22 May 2026
-                                             </td>
-
-                                             <td>
-
-                                                  <button className="edit-btn">
-                                                       <i className="fa-solid fa-pen"></i>
-                                                  </button>
-
-                                                  <button className="delete-btn">
-                                                       <i className="fa-solid fa-trash"></i>
-                                                  </button>
-
-                                             </td>
-
-                                        </tr>
+                                        {expenses.length > 0 ? (
+                                             expenses.slice(0,5).map((expense, index) => (
+                                                  <tr key={expense.expense_id || index}>
+                                                       <td>{index + 1}</td>
+                                                       <td>{expense.title}</td>
+                                                       <td>{expense.category}</td>
+                                                       <td className="amount">₹ {expense.amount}</td>
+                                                       <td>{new Date(expense.created_at).toLocaleDateString()}</td>
+                                                       <td>
+                                                            <button className="edit-btn">
+                                                                 <i className="fa-solid fa-pen"></i>
+                                                            </button>
+                                                            <button className="delete-btn">
+                                                                 <i className="fa-solid fa-trash"></i>
+                                                            </button>
+                                                       </td>
+                                                  </tr>
+                                             ))
+                                        ) : (
+                                             <tr>
+                                                  <td colSpan="6" style={{ textAlign: "center" }}>
+                                                       No expenses found. Start adding some!
+                                                  </td>
+                                             </tr>
+                                        )}
 
                                    </tbody>
 

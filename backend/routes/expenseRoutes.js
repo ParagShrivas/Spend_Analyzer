@@ -4,5 +4,6 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/add',authMiddleware, expenseController.addExpense);
+router.get('/get', authMiddleware, expenseController.getExpenses);
 
 module.exports = router;

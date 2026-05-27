@@ -18,3 +18,15 @@ exports.addExpense = async (req, res) => {
           return res.status(200).json({ message: "Expense added successfully" });
      })
 };
+
+exports.getExpenses = async (req,res)=>{
+     const userId = req.user.id;
+     const query = "SELECT * FROM expenses WHERE user_id = $1";
+
+     db.query(query,[userId], (err, result) => {
+          if (err) {
+               return res.status(500).json({ message: err.message });
+          }
+          return res.status(200).json(result.rows);
+     })
+}
