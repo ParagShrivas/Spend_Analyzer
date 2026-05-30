@@ -4,6 +4,7 @@ import '../css/sidebar.css';
 
 const Sidebar = () => {
      const navigate = useNavigate();
+
      return (
           <>
                <div className="sidebar">
@@ -11,12 +12,13 @@ const Sidebar = () => {
                     {/* Logo */}
                     <div className="logo-box">
                          <i className="fa-solid fa-wallet"></i>
+                         <h3>Spend Analyzer</h3>
                     </div>
 
                     {/* Menu */}
                     <div className="menu">
 
-                         <div className="menu-item">
+                         <div className="menu-item" onClick={() => navigate("/")}>
                               <i className="fa-solid fa-chart-pie"></i>
                               <span>Dashboard</span>
                          </div>
@@ -26,22 +28,22 @@ const Sidebar = () => {
                               <span>Expenses</span>
                          </div>
 
-                         <div className="menu-item">
+                         <div className="menu-item" onClick={() => navigate("/analytics")}>
                               <i className="fa-solid fa-chart-line"></i>
                               <span>Analytics</span>
                          </div>
 
-                         <div className="menu-item">
+                         <div className="menu-item" onClick={() => navigate("/budget")}>
                               <i className="fa-solid fa-wallet"></i>
                               <span>Budget</span>
                          </div>
 
-                         <div className="menu-item">
+                         <div className="menu-item" onClick={() => navigate("/transactions")}>
                               <i className="fa-solid fa-receipt"></i>
                               <span>Transactions</span>
                          </div>
 
-                         <div className="menu-item">
+                         <div className="menu-item" onClick={() => navigate("/settings")}>
                               <i className="fa-solid fa-gear"></i>
                               <span>Settings</span>
                          </div>
@@ -50,11 +52,8 @@ const Sidebar = () => {
 
                     {/* Profile */}
                     <div className="profile-box menu-item" onClick={() => navigate("/login")}>
-                         {/* <img
-                              src="https://i.pravatar.cc/100"
-                              alt="profile"
-                         /> */}
                          <i className="fas fa-user"></i>
+                         <span>Profile</span>
                     </div>
 
                </div>

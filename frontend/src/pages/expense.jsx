@@ -105,6 +105,108 @@ const Expense = () => {
           fetchExpenses();
      }, [])
 
+     const categoryColors = {
+          "Food & Dining": "#3b82f6",
+          "Travel": "#cc6f2d",
+          "Shopping": "#a855f7",
+          "Bills & Utilities": "#2271c5",
+          "Entertainment": "#ec4899",
+          "Healthcare": "#ef4444",
+          "Education": "#06b6d4",
+          "Groceries": "#84cc16",
+          "Salary": "#14b8a6",
+          "Investment": "#6366f1",
+          "Other": "#64748b"
+     };
+
+     const categoryTotals = expenses.reduce((acc, expense) => {
+          const category = expense.category || "Other";
+          const amount = Number(expense.amount || 0);
+
+          acc[category] = (acc[category] || 0) + amount;
+
+          return acc;
+     }, {});
+
+     const totalExpense = Object.values(categoryTotals).reduce(
+          (total, amount) => total + amount,
+          0
+     );
+
+     let currentPercent = 0;
+
+     const pieGradient = Object.entries(categoryTotals)
+          .map(([category, amount]) => {
+               const percent = totalExpense > 0 ? (amount / totalExpense) * 100 : 0;
+               const start = currentPercent;
+               const end = currentPercent + percent;
+
+               currentPercent = end;
+
+               return `${categoryColors[category] || categoryColors.Other} ${start}% ${end}%`;
+          })
+          .join(", ");
+
+     const pieData = Object.entries(categoryTotals).map(([category, amount]) => ({
+          category,
+          amount: Number(amount),
+          percentage: totalExpense > 0 ? (Number(amount) / totalExpense) * 100 : 0,
+          color: categoryColors[category] || categoryColors.Other
+     }));
+
+     const createPieSlice = (startAngle, endAngle, radius = 80, center = 100) => {
+          const start = {
+               x: center + radius * Math.cos((Math.PI * startAngle) / 180),
+               y: center + radius * Math.sin((Math.PI * startAngle) / 180)
+          };
+
+          const end = {
+               x: center + radius * Math.cos((Math.PI * endAngle) / 180),
+               y: center + radius * Math.sin((Math.PI * endAngle) / 180)
+          };
+
+          const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+
+          return `
+          M ${center} ${center}
+          L ${start.x} ${start.y}
+          A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}
+          Z
+     `;
+     };
+
+     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+     const currentDate = new Date();
+
+     const lastSixMonths = Array.from({ length: 6 }, (_, index) => {
+          const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - (5 - index), 1);
+
+          return {
+               month: monthNames[date.getMonth()],
+               monthIndex: date.getMonth(),
+               year: date.getFullYear(),
+               total: 0
+          };
+     });
+
+     expenses.forEach((expense) => {
+          const expenseDate = new Date(expense.created_at);
+          const amount = Number(expense.amount || 0);
+
+          const matchedMonth = lastSixMonths.find(
+               (item) =>
+                    item.monthIndex === expenseDate.getMonth() &&
+                    item.year === expenseDate.getFullYear()
+          );
+
+          if (matchedMonth) {
+               matchedMonth.total += amount;
+          }
+     });
+
+     const maxMonthlyExpense = Math.max(...lastSixMonths.map((item) => item.total), 1);
+
      return (
 
           <div className="expense-page">
@@ -117,7 +219,7 @@ const Expense = () => {
                     <div>
 
                          <h1>
-                              Welcome back, John 👋
+                              Welcome back 👋
                          </h1>
 
                          <p>
@@ -141,10 +243,6 @@ const Expense = () => {
 
                          <div className="header-icon">
                               <i className="fa-regular fa-bell"></i>
-                         </div>
-
-                         <div className="header-icon">
-                              <i className="fa-regular fa-moon"></i>
                          </div>
 
                     </div>
@@ -175,10 +273,6 @@ const Expense = () => {
 
                                         <h2>₹ 50,000</h2>
 
-                                        <span className="green">
-                                             ▲ 12.5%
-                                        </span>
-
                                    </div>
 
                               </div>
@@ -193,11 +287,7 @@ const Expense = () => {
 
                                         <h5>Total Expenses</h5>
 
-                                        <h2>₹ 18,500</h2>
-
-                                        <span className="red">
-                                             ▲ 8.3%
-                                        </span>
+                                        <h2>₹ {totalExpense}</h2>
 
                                    </div>
 
@@ -215,8 +305,6 @@ const Expense = () => {
 
                                         <h2>₹ 25,000</h2>
 
-                                        <p>May 2026</p>
-
                                    </div>
 
                               </div>
@@ -233,10 +321,6 @@ const Expense = () => {
 
                                         <h2>₹ 6,500</h2>
 
-                                        <p className="green">
-                                             26% Left
-                                        </p>
-
                                    </div>
 
                               </div>
@@ -250,7 +334,6 @@ const Expense = () => {
                               {/* Pie Chart */}
 
                               <div className="glass-card">
-
                                    <div className="card-title">
                                         <h3>Expense Overview</h3>
 
@@ -260,71 +343,109 @@ const Expense = () => {
                                    </div>
 
                                    <div className="pie-content">
+                                        <div className="pie-chart">
+                                             {totalExpense > 0 ? (
+                                                  <svg viewBox="0 0 200 200" width="100%" height="100%">
+                                                       {(() => {
+                                                            let startAngle = -90;
 
-                                        <div className="pie-chart"></div>
+                                                            return pieData.map((item) => {
+                                                                 const angle = (item.percentage / 100) * 360;
+                                                                 const endAngle = startAngle + angle;
+                                                                 const midAngle = startAngle + angle / 2;
 
-                                        <div className="pie-details">
+                                                                 const labelRadius = 55;
 
-                                             <div className="pie-item">
+                                                                 const labelX =
+                                                                      100 + labelRadius * Math.cos((Math.PI * midAngle) / 180);
 
-                                                  <span className="dot blue-dot"></span>
+                                                                 const labelY =
+                                                                      100 + labelRadius * Math.sin((Math.PI * midAngle) / 180);
 
-                                                  <p>
-                                                       Food & Dining
-                                                  </p>
+                                                                 const path = createPieSlice(startAngle, endAngle);
 
-                                                  <h5>₹ 7,200</h5>
+                                                                 startAngle = endAngle;
 
-                                             </div>
+                                                                 return (
+                                                                      <g key={item.category}>
+                                                                           <path d={path} fill={item.color} />
 
-                                             <div className="pie-item">
+                                                                           {item.percentage >= 5 && (
+                                                                                <text
+                                                                                     x={labelX}
+                                                                                     y={labelY}
+                                                                                     textAnchor="middle"
+                                                                                     dominantBaseline="middle"
+                                                                                     fill="#fff"
+                                                                                     fontSize="12"
+                                                                                     fontWeight="700"
+                                                                                >
+                                                                                     {item.percentage.toFixed(0)}%
+                                                                                </text>
+                                                                           )}
+                                                                      </g>
+                                                                 );
+                                                            });
+                                                       })()}
 
-                                                  <span className="dot orange-dot"></span>
+                                                       <circle cx="100" cy="100" r="38" fill="#fff" />
 
-                                                  <p>
-                                                       Travel
-                                                  </p>
+                                                       <text
+                                                            x="100"
+                                                            y="95"
+                                                            textAnchor="middle"
+                                                            fontSize="13"
+                                                            fontWeight="700"
+                                                            fill="#111827"
+                                                       >
+                                                            Total
+                                                       </text>
 
-                                                  <h5>₹ 3,400</h5>
-
-                                             </div>
-
-                                             <div className="pie-item">
-
-                                                  <span className="dot purple-dot"></span>
-
-                                                  <p>
-                                                       Shopping
-                                                  </p>
-
-                                                  <h5>₹ 4,100</h5>
-
-                                             </div>
-
-                                             <div className="pie-item">
-
-                                                  <span className="dot green-dot"></span>
-
-                                                  <p>
-                                                       Bills
-                                                  </p>
-
-                                                  <h5>₹ 2,800</h5>
-
-                                             </div>
-
+                                                       <text
+                                                            x="100"
+                                                            y="113"
+                                                            textAnchor="middle"
+                                                            fontSize="12"
+                                                            fontWeight="600"
+                                                            fill="#374151"
+                                                       >
+                                                            ₹{totalExpense.toLocaleString("en-IN")}
+                                                       </text>
+                                                  </svg>
+                                             ) : (
+                                                  <div className="empty-chart">0%</div>
+                                             )}
                                         </div>
+                                        <div className="pie-details">
+                                             {Object.keys(categoryTotals).length > 0 ? (
+                                                  Object.entries(categoryTotals).map(([category, amount], index) => (
+                                                       <div className="pie-item" key={category}>
+                                                            <span
+                                                                 className="dot"
+                                                                 style={{
+                                                                      backgroundColor:
+                                                                           categoryColors[category] || categoryColors.Other
+                                                                 }}
+                                                            ></span>
 
+                                                            <p>{category}</p>
+
+                                                            <h5>
+                                                                 ₹ {Number(amount).toLocaleString("en-IN")}
+                                                            </h5>
+                                                       </div>
+                                                  ))
+                                             ) : (
+                                                  <p>No expense data found.</p>
+                                             )}
+                                        </div>
                                    </div>
-
                               </div>
 
                               {/* Graph */}
 
                               <div className="glass-card">
-
                                    <div className="card-title">
-
                                         <h3>
                                              Monthly Trend
                                         </h3>
@@ -332,15 +453,32 @@ const Expense = () => {
                                         <button>
                                              6 Months
                                         </button>
-
                                    </div>
 
-                                   <div className="graph-container">
+                                   <div className="bar-graph-container">
+                                        {lastSixMonths.map((item) => {
+                                             const barHeight = (item.total / maxMonthlyExpense) * 100;
 
-                                        <div className="graph-line"></div>
+                                             return (
+                                                  <div className="bar-item" key={`${item.month}-${item.year}`}>
+                                                       <div className="bar-value">
+                                                            ₹{Number(item.total).toLocaleString("en-IN")}
+                                                       </div>
 
+                                                       <div className="bar-track">
+                                                            <div
+                                                                 className="bar-fill"
+                                                                 style={{
+                                                                      height: `${barHeight}%`
+                                                                 }}
+                                                            ></div>
+                                                       </div>
+
+                                                       <p>{item.month}</p>
+                                                  </div>
+                                             );
+                                        })}
                                    </div>
-
                               </div>
 
                          </div>
@@ -609,11 +747,6 @@ const Expense = () => {
                                         </option>
                                    </select>
 
-                                   <input
-                                        type="text"
-                                        placeholder="Search..."
-                                   />
-
                               </div>
 
                          </div>
@@ -640,7 +773,7 @@ const Expense = () => {
                                    <tbody>
 
                                         {expenses.length > 0 ? (
-                                             expenses.slice(0,5).map((expense, index) => (
+                                             expenses.slice(0, 5).map((expense, index) => (
                                                   <tr key={expense.expense_id || index}>
                                                        <td>{index + 1}</td>
                                                        <td>{expense.title}</td>
