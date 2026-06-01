@@ -17,6 +17,8 @@ const Expense = () => {
      const [showToast, setShowToast] = useState(false);
      const [toastMessage, setToastMessage] = useState("");
      const [toastMessageType, setToastMessageType] = useState("");
+     const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
+     const [selectedExpenseId, setSelectedExpenseId] = useState(null);
 
      const categoryIcons = {
           "Food & Dining": "🍔",
@@ -76,6 +78,38 @@ const Expense = () => {
           setDate("");
           setDescription("");
      };
+
+     const handleDelete = async () => {
+          if (!selectedExpenseId) return;
+
+          setShowDeleteOverlay(false);
+          try {
+               const response = await fetch(`http://localhost:1500/expense/delete/${selectedExpenseId}`, {
+                    method: "DELETE",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
+
+               const data = await response.json();
+
+               if (response.ok) {
+                    setShowToast(true);
+                    setToastMessage("Expense deleted successfully!");
+                    setToastMessageType("success");
+               } else {
+                    setShowToast(true);
+                    setToastMessage("Error deleting expense!");
+                    setToastMessageType("error");
+               }
+          } catch (error) {
+               console.error("Error deleting expense:", error);
+               setShowToast(true);
+               setToastMessage("Error deleting expense!");
+               setToastMessageType("error");
+          }
+     }
 
      useEffect(() => {
           const fetchExpenses = async () => {
@@ -720,7 +754,7 @@ const Expense = () => {
 
                                              <div>
                                                   <h4>₹ {expense.amount}</h4>
-                                                  <p>{new Date(expense.date).toLocaleDateString()}</p>
+                                                  <p>{new Date(expense.created_at).toLocaleDateString()}</p>
                                              </div>
                                         </div>
                                    ))
@@ -779,12 +813,15 @@ const Expense = () => {
                                                        <td>{expense.title}</td>
                                                        <td>{expense.category}</td>
                                                        <td className="amount">₹ {expense.amount}</td>
-                                                       <td>{new Date(expense.created_at).toLocaleDateString()}</td>
+                                                       <td>{new Date(expense.expense_date).toLocaleDateString()}</td>
                                                        <td>
-                                                            <button className="edit-btn">
+                                                            <button className="edit-btn" onClick={() => { alert(`${expense.id}`) }}>
                                                                  <i className="fa-solid fa-pen"></i>
                                                             </button>
-                                                            <button className="delete-btn">
+                                                            <button className="delete-btn" onClick={() => {
+                                                                 setSelectedExpenseId(expense.id);
+                                                                 setShowDeleteOverlay(true);
+                                                            }}>
                                                                  <i className="fa-solid fa-trash"></i>
                                                             </button>
                                                        </td>
@@ -803,10 +840,40 @@ const Expense = () => {
                               </table>
 
                          </div>
-
                     </div>
 
                </div>
+               {showDeleteOverlay && (
+                    <div className="delete-overlay">
+                         <div className="delete-box">
+                              <div className="delete-icon">
+                                   <i className="fa-solid fa-trash"></i>
+                              </div>
+
+                              <h3>Delete Expense?</h3>
+
+                              <p>Are you sure you want to delete this expense?</p>
+
+                              <div className="delete-actions">
+                                   <button
+                                        className="confirm-delete-btn"
+                                        onClick={handleDelete}
+                                   >
+                                        Yes
+                                   </button>
+                                   <button
+                                        className="cancel-delete-btn"
+                                        onClick={() => {
+                                             setShowDeleteOverlay(false);
+                                        }}
+                                   >
+                                        No
+                                   </button>
+
+                              </div>
+                         </div>
+                    </div>
+               )}
 
           </div>
      );
