@@ -1,24 +1,65 @@
-// pages/Expense.jsx
+// pages/Dashboard.jsx
 
 import React from "react";
-import "../css/expense.css";
+import "../css/dashboard.css";
 import Toast from "../components/toast";
 import { useState, useEffect } from "react";
 
-const Expense = () => {
+const Dashboard = () => {
+     // expense
      const [expenses, setExpenses] = useState([]);
 
+     // form
      const [title, setTitle] = useState("");
      const [amount, setAmount] = useState("");
      const [category, setCategory] = useState("");
      const [date, setDate] = useState("");
      const [description, setDescription] = useState("");
+
+     // loading and toast
      const [loading, setLoading] = useState(false);
      const [showToast, setShowToast] = useState(false);
      const [toastMessage, setToastMessage] = useState("");
      const [toastMessageType, setToastMessageType] = useState("");
+
+     // edit expense
+     const [showEditOverlay, setShowEditOverlay] = useState(false);
+     const [editExpenseId, setEditExpenseId] = useState(null);
+
+     // delete confirmation
      const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
      const [selectedExpenseId, setSelectedExpenseId] = useState(null);
+
+     // pagination and filtering
+     const [currentPage, setCurrentPage] = useState(1);
+     const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+     const itemsPerPage = 5;
+
+     const categories = [
+          "Food & Dining",
+          "Travel",
+          "Shopping",
+          "Bills & Utilities",
+          "Entertainment",
+          "Healthcare",
+          "Education",
+          "Groceries",
+          "Salary",
+          "Investment",
+          "Other"
+     ];
+
+     const filteredExpenses = selectedCategory === "All Categories"
+          ? expenses
+          : expenses.filter((expense) => expense.category === selectedCategory);
+
+     const totalPages = Math.ceil(filteredExpenses.length / itemsPerPage);
+
+     const paginatedExpenses = filteredExpenses.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+     );
 
      const categoryIcons = {
           "Food & Dining": "🍔",
@@ -34,6 +75,7 @@ const Expense = () => {
           "Other": "📦"
      };
 
+     // add expense
      const handleExpense = async (e) => {
           e.preventDefault();
 
@@ -79,6 +121,7 @@ const Expense = () => {
           setDescription("");
      };
 
+     // delete expense
      const handleDelete = async () => {
           if (!selectedExpenseId) return;
 
@@ -111,31 +154,33 @@ const Expense = () => {
           }
      }
 
-     useEffect(() => {
-          const fetchExpenses = async () => {
-               // Fetch expenses and stats here
-               try {
-                    const response = await fetch("http://localhost:1500/expense/get", {
-                         method: "GET",
-                         headers: {
-                              "Content-Type": "application/json"
-                         },
-                         credentials: "include"
-                    });
+     // load expenses on component mount
+     const fetchExpenses = async () => {
+          // Fetch expenses and stats here
+          try {
+               const response = await fetch("http://localhost:1500/expense/get", {
+                    method: "GET",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
 
-                    const data = await response.json();
+               const data = await response.json();
 
-                    if (response.ok) {
-                         setExpenses(data);
-                    } else {
-                         setShowToast(true);
-                         setToastMessage("Error fetching expenses!");
-                         setToastMessageType("error");
-                    }
-               } catch (error) {
-                    console.error("Error fetching data:", error);
+               if (response.ok) {
+                    setExpenses(data);
+               } else {
+                    setShowToast(true);
+                    setToastMessage("Error fetching expenses!");
+                    setToastMessageType("error");
                }
+          } catch (error) {
+               console.error("Error fetching data:", error);
           }
+     }
+
+     useEffect(() => {
           fetchExpenses();
      }, [])
 
@@ -167,6 +212,7 @@ const Expense = () => {
           0
      );
 
+     // pie chart
      let currentPercent = 0;
 
      const pieGradient = Object.entries(categoryTotals)
@@ -209,6 +255,7 @@ const Expense = () => {
      `;
      };
 
+     // bar graph
      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
      const currentDate = new Date();
@@ -240,6 +287,75 @@ const Expense = () => {
      });
 
      const maxMonthlyExpense = Math.max(...lastSixMonths.map((item) => item.total), 1);
+
+     const handleEditClick = (expense) => {
+          setEditExpenseId(expense.expense_id || expense.id);
+
+          setTitle(expense.title);
+          setAmount(expense.amount);
+          setCategory(expense.category);
+          setDate(expense.expense_date?.split("T")[0] || expense.created_at?.split("T")[0]);
+          setDescription(expense.description || "");
+
+          setShowEditOverlay(true);
+     };
+
+     // update expense
+     const handleUpdateExpense = async (e) => {
+          e.preventDefault();
+
+          if (!editExpenseId) return;
+
+          setLoading(true);
+
+          try {
+               const response = await fetch(`http://localhost:1500/expense/update/${editExpenseId}`, {
+                    method: "PUT",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                         title,
+                         amount,
+                         category,
+                         date,
+                         description
+                    })
+               });
+
+               const data = await response.json();
+
+               if (response.ok) {
+                    setShowToast(true);
+                    setToastMessage("Expense updated successfully!");
+                    setToastMessageType("success");
+
+                    setShowEditOverlay(false);
+                    setEditExpenseId(null);
+
+                    setTitle("");
+                    setAmount("");
+                    setCategory("");
+                    setDate("");
+                    setDescription("");
+
+                    fetchExpenses();
+               } else {
+                    setShowToast(true);
+                    setToastMessage(data.message || "Error updating expense!");
+                    setToastMessageType("error");
+               }
+          } catch (error) {
+               console.error("Error updating expense:", error);
+
+               setShowToast(true);
+               setToastMessage("Error updating expense!");
+               setToastMessageType("error");
+          } finally {
+               setLoading(false);
+          }
+     };
 
      return (
 
@@ -372,7 +488,7 @@ const Expense = () => {
                                         <h3>Expense Overview</h3>
 
                                         <button>
-                                             This Month
+                                             Lifetime
                                         </button>
                                    </div>
 
@@ -657,7 +773,6 @@ const Expense = () => {
                               {/* Date */}
 
                               <div className="form-group">
-
                                    <label>
                                         Date
                                    </label>
@@ -665,12 +780,15 @@ const Expense = () => {
                                    <input
                                         type="date"
                                         value={date}
-                                        onChange={(e) =>
-                                             setDate(e.target.value)
-                                        }
+                                        max={new Intl.DateTimeFormat("en-CA", {
+                                             timeZone: "Asia/Kolkata",
+                                             year: "numeric",
+                                             month: "2-digit",
+                                             day: "2-digit"
+                                        }).format(new Date())}
+                                        onChange={(e) => setDate(e.target.value)}
                                         required
                                    />
-
                               </div>
 
                               {/* Description */}
@@ -775,10 +893,22 @@ const Expense = () => {
 
                               <div className="table-actions">
 
-                                   <select>
-                                        <option>
+                                   <select
+                                        value={selectedCategory}
+                                        onChange={(e) => {
+                                             setSelectedCategory(e.target.value);
+                                             setCurrentPage(1);
+                                        }}
+                                   >
+                                        <option value="All Categories">
                                              All Categories
                                         </option>
+
+                                        {categories.map((category) => (
+                                             <option key={category} value={category}>
+                                                  {category}
+                                             </option>
+                                        ))}
                                    </select>
 
                               </div>
@@ -790,38 +920,50 @@ const Expense = () => {
                               <table>
 
                                    <thead>
-
                                         <tr>
-
                                              <th>#</th>
                                              <th>Title</th>
                                              <th>Category</th>
                                              <th>Amount</th>
                                              <th>Date</th>
                                              <th>Actions</th>
-
                                         </tr>
-
                                    </thead>
 
                                    <tbody>
 
-                                        {expenses.length > 0 ? (
-                                             expenses.slice(0, 5).map((expense, index) => (
-                                                  <tr key={expense.expense_id || index}>
-                                                       <td>{index + 1}</td>
+                                        {paginatedExpenses.length > 0 ? (
+                                             paginatedExpenses.map((expense, index) => (
+                                                  <tr key={expense.expense_id || expense.id || index}>
+                                                       <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+
                                                        <td>{expense.title}</td>
+
                                                        <td>{expense.category}</td>
-                                                       <td className="amount">₹ {expense.amount}</td>
-                                                       <td>{new Date(expense.expense_date).toLocaleDateString()}</td>
+
+                                                       <td className="amount">
+                                                            ₹ {Number(expense.amount).toLocaleString("en-IN")}
+                                                       </td>
+
                                                        <td>
-                                                            <button className="edit-btn" onClick={() => { alert(`${expense.id}`) }}>
+                                                            {new Date(expense.expense_date).toLocaleDateString("en-IN")}
+                                                       </td>
+
+                                                       <td>
+                                                            <button
+                                                                 className="edit-btn"
+                                                                 onClick={() => handleEditClick(expense)}
+                                                            >
                                                                  <i className="fa-solid fa-pen"></i>
                                                             </button>
-                                                            <button className="delete-btn" onClick={() => {
-                                                                 setSelectedExpenseId(expense.id);
-                                                                 setShowDeleteOverlay(true);
-                                                            }}>
+
+                                                            <button
+                                                                 className="delete-btn"
+                                                                 onClick={() => {
+                                                                      setSelectedExpenseId(expense.expense_id || expense.id);
+                                                                      setShowDeleteOverlay(true);
+                                                                 }}
+                                                            >
                                                                  <i className="fa-solid fa-trash"></i>
                                                             </button>
                                                        </td>
@@ -840,9 +982,41 @@ const Expense = () => {
                               </table>
 
                          </div>
+
+                         {totalPages > 1 && (
+                              <div className="pagination-box">
+
+                                   <button
+                                        disabled={currentPage === 1}
+                                        onClick={() => setCurrentPage(currentPage - 1)}
+                                   >
+                                        Previous
+                                   </button>
+
+                                   {[...Array(totalPages)].map((_, index) => (
+                                        <button
+                                             key={index}
+                                             className={currentPage === index + 1 ? "active-page" : ""}
+                                             onClick={() => setCurrentPage(index + 1)}
+                                        >
+                                             {index + 1}
+                                        </button>
+                                   ))}
+
+                                   <button
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => setCurrentPage(currentPage + 1)}
+                                   >
+                                        Next
+                                   </button>
+
+                              </div>
+                         )}
+
                     </div>
 
                </div>
+               {/* delete confirmation */}
                {showDeleteOverlay && (
                     <div className="delete-overlay">
                          <div className="delete-box">
@@ -875,8 +1049,141 @@ const Expense = () => {
                     </div>
                )}
 
+               {/* edit expense form */}
+               {showEditOverlay && (
+                    <div className="edit-overlay">
+                         <div className="edit-box">
+
+                              <div className="edit-header">
+                                   <div>
+                                        <h3>Edit Expense</h3>
+                                        <p>Update your selected expense details</p>
+                                   </div>
+
+                                   <button
+                                        className="edit-close-btn"
+                                        onClick={() => {
+                                             setShowEditOverlay(false);
+                                             setEditExpenseId(null);
+                                        }}
+                                   >
+                                        <i className="fa-solid fa-xmark"></i>
+                                   </button>
+                              </div>
+
+                              <form onSubmit={handleUpdateExpense}>
+
+                                   <div className="form-group">
+                                        <label>Title</label>
+                                        <input
+                                             type="text"
+                                             placeholder="Enter expense title"
+                                             value={title}
+                                             onChange={(e) => setTitle(e.target.value)}
+                                             required
+                                        />
+                                   </div>
+
+                                   <div className="form-group">
+                                        <label>Amount</label>
+                                        <input
+                                             type="number"
+                                             placeholder="Enter amount"
+                                             value={amount}
+                                             onChange={(e) => setAmount(e.target.value)}
+                                             required
+                                        />
+                                   </div>
+
+                                   <div className="form-group">
+                                        <label>Category</label>
+
+                                        <select
+                                             value={category}
+                                             onChange={(e) => setCategory(e.target.value)}
+                                             required
+                                        >
+                                             <option value="">Select category</option>
+
+                                             {categories.map((cat) => (
+                                                  <option key={cat} value={cat}>
+                                                       {cat}
+                                                  </option>
+                                             ))}
+                                        </select>
+                                   </div>
+
+                                   <div className="form-group">
+                                        <label>Date</label>
+
+                                        <input
+                                             type="date"
+                                             value={date}
+                                             max={new Intl.DateTimeFormat("en-CA", {
+                                                  timeZone: "Asia/Kolkata",
+                                                  year: "numeric",
+                                                  month: "2-digit",
+                                                  day: "2-digit"
+                                             }).format(new Date())}
+                                             onChange={(e) => setDate(e.target.value)}
+                                             required
+                                        />
+                                   </div>
+
+                                   <div className="form-group">
+                                        <label>Description</label>
+
+                                        <textarea
+                                             rows="4"
+                                             placeholder="Add a note..."
+                                             value={description}
+                                             onChange={(e) => setDescription(e.target.value)}
+                                        ></textarea>
+                                   </div>
+
+                                   <div className="edit-actions">
+                                        <button
+                                             type="button"
+                                             className="cancel-edit-btn"
+                                             onClick={() => {
+                                                  setShowEditOverlay(false);
+                                                  setEditExpenseId(null);
+                                                  setTitle("");
+                                                  setAmount("");
+                                                  setCategory("");
+                                                  setDate("");
+                                                  setDescription("");
+                                             }}
+                                        >
+                                             Cancel
+                                        </button>
+
+                                        <button
+                                             type="submit"
+                                             className="update-expense-btn"
+                                             disabled={loading}
+                                        >
+                                             {loading ? (
+                                                  <>
+                                                       Updating...
+                                                       <i className="fa-solid fa-spinner fa-spin"></i>
+                                                  </>
+                                             ) : (
+                                                  <>
+                                                       Update Expense
+                                                       <i className="fa-solid fa-pen"></i>
+                                                  </>
+                                             )}
+                                        </button>
+                                   </div>
+
+                              </form>
+                         </div>
+                    </div>
+               )}
+
           </div>
      );
 };
 
-export default Expense;
+export default Dashboard;

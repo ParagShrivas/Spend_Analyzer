@@ -953,3 +953,170 @@ td {
           transform: scale(1);
      }
 }
+
+.pagination-box {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 8px;
+     margin-top: 20px;
+     flex-wrap: wrap;
+}
+
+.pagination-box button {
+     border: none;
+     outline: none;
+     padding: 8px 14px;
+     border-radius: 10px;
+     background: #e5e7eb;
+     color: #374151;
+     font-size: 14px;
+     font-weight: 700;
+     cursor: pointer;
+     transition: 0.3s ease;
+}
+
+.pagination-box button:hover {
+     background: var(--primary-sky);
+     color: #ffffff;
+}
+
+.pagination-box button:disabled {
+     opacity: 0.5;
+     cursor: not-allowed;
+}
+
+.pagination-box .active-page {
+     background: var(--primary-sky);
+     color: #ffffff;
+}
+
+.edit-overlay {
+     position: fixed;
+     inset: 0;
+     background: rgba(15, 23, 42, 0.55);
+     backdrop-filter: blur(6px);
+     z-index: 9999;
+
+     display: flex;
+     align-items: center;
+     justify-content: center;
+
+     padding: 20px;
+}
+
+.edit-box {
+     width: 100%;
+     max-width: 520px;
+     max-height: 90vh;
+     overflow-y: auto;
+
+     background: var(--white);
+     border-radius: var(--radius-large);
+     padding: 25px;
+
+     box-shadow: var(--shadow);
+     animation: popupScale 0.25s ease;
+}
+
+.edit-header {
+     display: flex;
+     align-items: flex-start;
+     justify-content: space-between;
+     gap: 15px;
+
+     margin-bottom: 20px;
+}
+
+.edit-header h3 {
+     margin: 0;
+     color: var(--text-dark);
+     font-size: 24px;
+}
+
+.edit-header p {
+     margin: 5px 0 0;
+     color: var(--text-light);
+     font-size: 14px;
+}
+
+.edit-close-btn {
+     width: 38px;
+     height: 38px;
+
+     border: none;
+     outline: none;
+     border-radius: 50%;
+
+     background: #f1f5f9;
+     color: #334155;
+
+     display: flex;
+     align-items: center;
+     justify-content: center;
+
+     cursor: pointer;
+     transition: var(--transition);
+}
+
+.edit-close-btn:hover {
+     background: #ef4444;
+     color: #ffffff;
+}
+
+.edit-actions {
+     display: flex;
+     gap: 12px;
+     margin-top: 20px;
+}
+
+.cancel-edit-btn,
+.update-expense-btn {
+     flex: 1;
+
+     border: none;
+     outline: none;
+
+     padding: 13px 18px;
+     border-radius: var(--radius-medium);
+
+     font-weight: 700;
+     cursor: pointer;
+
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 8px;
+
+     transition: var(--transition);
+}
+
+.cancel-edit-btn {
+     background: #e5e7eb;
+     color: #374151;
+}
+
+.update-expense-btn {
+     background: var(--primary-sky);
+     color: #ffffff;
+}
+
+.cancel-edit-btn:hover {
+     background: #d1d5db;
+}
+
+.update-expense-btn:hover {
+     opacity: 0.9;
+}
+
+@keyframes popupScale {
+     from {
+          opacity: 0;
+          transform: scale(0.92);
+     }
+
+     to {
+          opacity: 1;
+          transform: scale(1);
+     }
+}

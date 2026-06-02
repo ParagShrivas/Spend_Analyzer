@@ -39,7 +39,7 @@ const Login = () => {
 
                     setTimeout(() => {
                          setShowToast(false);
-                         navigate('/');
+                         navigate('/dashboard');
                     }, 2000);
 
                } else {

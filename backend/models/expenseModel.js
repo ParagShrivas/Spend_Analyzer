@@ -1,5 +1,6 @@
 const db = require('../config/db');
 
+// add expense
 exports.addExpense = async (req, res) => {
      const { title,
           amount,
@@ -19,6 +20,7 @@ exports.addExpense = async (req, res) => {
      })
 };
 
+// fetch expenses
 exports.getExpenses = async (req,res)=>{
      const userId = req.user.id;
      const query = "SELECT * FROM expenses WHERE user_id = $1 order by expense_date desc";
@@ -31,6 +33,7 @@ exports.getExpenses = async (req,res)=>{
      })
 }
 
+// delete expense
 exports.deleteExpense = async(req,res)=>{
      const expenseId = req.params.id;
      const userId = req.user.id;
@@ -45,5 +48,24 @@ exports.deleteExpense = async(req,res)=>{
                return res.status(404).json({ message: "Expense not found" });
           }
           return res.status(200).json({ message: "Expense deleted successfully" });
+     })
+}
+
+// update expense
+exports.updateExpense = async(req,res)=>{
+     const { title,amount,category,date,description } = req.body;
+     const expenseId = req.params.id;
+     const userId = req.user.id;
+
+     const query = "UPDATE expenses SET title = $1, amount = $2, category = $3, expense_date = $4, description = $5 WHERE id = $6 AND user_id = $7";
+
+     db.query(query,[title, amount, category, date, description, expenseId, userId], (err, result) => {
+          if (err) {
+               return res.status(500).json({ message: err.message });
+          }
+          if(result.rowCount === 0){
+               return res.status(404).json({ message: "Expense not found" });
+          }
+          return res.status(200).json({ message: "Expense updated successfully" });
      })
 }

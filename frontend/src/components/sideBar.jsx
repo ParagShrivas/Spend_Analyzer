@@ -18,7 +18,7 @@ const Sidebar = () => {
                     {/* Menu */}
                     <div className="menu">
 
-                         <div className="menu-item" onClick={() => navigate("/")}>
+                         <div className="menu-item" onClick={() => navigate("/dashboard")}>
                               <i className="fa-solid fa-chart-pie"></i>
                               <span>Dashboard</span>
                          </div>
