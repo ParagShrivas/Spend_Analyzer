@@ -4,6 +4,15 @@ import React from "react";
 import "../css/dashboard.css";
 import Toast from "../components/toast";
 import { useState, useEffect } from "react";
+import { Pie } from "react-chartjs-2";
+import {
+     Chart as ChartJS,
+     ArcElement,
+     Tooltip,
+     Legend
+} from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
      // expense
@@ -102,6 +111,7 @@ const Dashboard = () => {
                     setShowToast(true);
                     setToastMessage("Expense added successfully!");
                     setToastMessageType("success");
+                    fetchExpenses();
                } else {
                     setShowToast(true);
                     setToastMessage("Error adding expense!");
@@ -111,6 +121,7 @@ const Dashboard = () => {
                console.error("Error adding expense:", error);
           } finally {
                setLoading(false);
+               fetchExpenses();
           }
 
           // Reset Form
@@ -141,6 +152,7 @@ const Dashboard = () => {
                     setShowToast(true);
                     setToastMessage("Expense deleted successfully!");
                     setToastMessageType("success");
+                    fetchExpenses();
                } else {
                     setShowToast(true);
                     setToastMessage("Error deleting expense!");
@@ -185,7 +197,7 @@ const Dashboard = () => {
      }, [])
 
      const categoryColors = {
-          "Food & Dining": "#3b82f6",
+          "Food & Dining": "#15d8ea",
           "Travel": "#cc6f2d",
           "Shopping": "#a855f7",
           "Bills & Utilities": "#2271c5",
@@ -208,51 +220,44 @@ const Dashboard = () => {
      }, {});
 
      const totalExpense = Object.values(categoryTotals).reduce(
-          (total, amount) => total + amount,
+          (total, amount) => total + Number(amount),
           0
      );
 
-     // pie chart
-     let currentPercent = 0;
+     const pieChartData = {
+          labels: Object.keys(categoryTotals),
+          datasets: [
+               {
+                    data: Object.values(categoryTotals).map((amount) => Number(amount)),
+                    backgroundColor: Object.keys(categoryTotals).map(
+                         (category) => categoryColors[category] || categoryColors.Other
+                    ),
+                    borderWidth: 2,
+                    borderColor: "#ffffff"
+               }
+          ]
+     };
 
-     const pieGradient = Object.entries(categoryTotals)
-          .map(([category, amount]) => {
-               const percent = totalExpense > 0 ? (amount / totalExpense) * 100 : 0;
-               const start = currentPercent;
-               const end = currentPercent + percent;
+     const pieChartOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+               legend: {
+                    display: false
+               },
+               tooltip: {
+                    callbacks: {
+                         label: function (context) {
+                              const value = context.raw;
+                              const percentage = totalExpense > 0
+                                   ? ((value / totalExpense) * 100).toFixed(1)
+                                   : 0;
 
-               currentPercent = end;
-
-               return `${categoryColors[category] || categoryColors.Other} ${start}% ${end}%`;
-          })
-          .join(", ");
-
-     const pieData = Object.entries(categoryTotals).map(([category, amount]) => ({
-          category,
-          amount: Number(amount),
-          percentage: totalExpense > 0 ? (Number(amount) / totalExpense) * 100 : 0,
-          color: categoryColors[category] || categoryColors.Other
-     }));
-
-     const createPieSlice = (startAngle, endAngle, radius = 80, center = 100) => {
-          const start = {
-               x: center + radius * Math.cos((Math.PI * startAngle) / 180),
-               y: center + radius * Math.sin((Math.PI * startAngle) / 180)
-          };
-
-          const end = {
-               x: center + radius * Math.cos((Math.PI * endAngle) / 180),
-               y: center + radius * Math.sin((Math.PI * endAngle) / 180)
-          };
-
-          const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
-
-          return `
-          M ${center} ${center}
-          L ${start.x} ${start.y}
-          A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}
-          Z
-     `;
+                              return `${context.label}: ₹${Number(value).toLocaleString("en-IN")} (${percentage}%)`;
+                         }
+                    }
+               }
+          }
      };
 
      // bar graph
@@ -357,6 +362,21 @@ const Dashboard = () => {
           }
      };
 
+     // monthly expense 
+     const currentMonth = new Date().getMonth();
+     const currentYear = new Date().getFullYear();
+
+     const monthlyTotalExpense = expenses
+          .filter((expense) => {
+               const expenseDate = new Date(expense.expense_date || expense.created_at);
+
+               return (
+                    expenseDate.getMonth() === currentMonth &&
+                    expenseDate.getFullYear() === currentYear
+               );
+          })
+          .reduce((total, expense) => total + Number(expense.amount || 0), 0);
+
      return (
 
           <div className="expense-page">
@@ -436,8 +456,9 @@ const Dashboard = () => {
                                    <div>
 
                                         <h5>Total Expenses</h5>
-
-                                        <h2>₹ {totalExpense}</h2>
+                                             
+                                        <h2>₹ {monthlyTotalExpense}</h2>
+                                        <small>{currentMonth + 1}/{currentYear}</small>
 
                                    </div>
 
@@ -493,98 +514,44 @@ const Dashboard = () => {
                                    </div>
 
                                    <div className="pie-content">
-                                        <div className="pie-chart">
+                                        <div className="pie-chart mb-2">
                                              {totalExpense > 0 ? (
-                                                  <svg viewBox="0 0 200 200" width="100%" height="100%">
-                                                       {(() => {
-                                                            let startAngle = -90;
-
-                                                            return pieData.map((item) => {
-                                                                 const angle = (item.percentage / 100) * 360;
-                                                                 const endAngle = startAngle + angle;
-                                                                 const midAngle = startAngle + angle / 2;
-
-                                                                 const labelRadius = 55;
-
-                                                                 const labelX =
-                                                                      100 + labelRadius * Math.cos((Math.PI * midAngle) / 180);
-
-                                                                 const labelY =
-                                                                      100 + labelRadius * Math.sin((Math.PI * midAngle) / 180);
-
-                                                                 const path = createPieSlice(startAngle, endAngle);
-
-                                                                 startAngle = endAngle;
-
-                                                                 return (
-                                                                      <g key={item.category}>
-                                                                           <path d={path} fill={item.color} />
-
-                                                                           {item.percentage >= 5 && (
-                                                                                <text
-                                                                                     x={labelX}
-                                                                                     y={labelY}
-                                                                                     textAnchor="middle"
-                                                                                     dominantBaseline="middle"
-                                                                                     fill="#fff"
-                                                                                     fontSize="12"
-                                                                                     fontWeight="700"
-                                                                                >
-                                                                                     {item.percentage.toFixed(0)}%
-                                                                                </text>
-                                                                           )}
-                                                                      </g>
-                                                                 );
-                                                            });
-                                                       })()}
-
-                                                       <circle cx="100" cy="100" r="38" fill="#fff" />
-
-                                                       <text
-                                                            x="100"
-                                                            y="95"
-                                                            textAnchor="middle"
-                                                            fontSize="13"
-                                                            fontWeight="700"
-                                                            fill="#111827"
-                                                       >
-                                                            Total
-                                                       </text>
-
-                                                       <text
-                                                            x="100"
-                                                            y="113"
-                                                            textAnchor="middle"
-                                                            fontSize="12"
-                                                            fontWeight="600"
-                                                            fill="#374151"
-                                                       >
-                                                            ₹{totalExpense.toLocaleString("en-IN")}
-                                                       </text>
-                                                  </svg>
+                                                  <Pie data={pieChartData} options={pieChartOptions} />
                                              ) : (
                                                   <div className="empty-chart">0%</div>
                                              )}
                                         </div>
+
                                         <div className="pie-details">
                                              {Object.keys(categoryTotals).length > 0 ? (
-                                                  Object.entries(categoryTotals).map(([category, amount], index) => (
-                                                       <div className="pie-item" key={category}>
-                                                            <span
-                                                                 className="dot"
-                                                                 style={{
-                                                                      backgroundColor:
-                                                                           categoryColors[category] || categoryColors.Other
-                                                                 }}
-                                                            ></span>
+                                                  Object.entries(categoryTotals).map(([category, amount]) => {
+                                                       const percentage = totalExpense > 0
+                                                            ? ((Number(amount) / totalExpense) * 100).toFixed(1)
+                                                            : 0;
 
-                                                            <p>{category}</p>
+                                                       return (
+                                                            <div className="pie-item" key={category}>
+                                                                 <span
+                                                                      className="dot"
+                                                                      style={{
+                                                                           backgroundColor:
+                                                                                categoryColors[category] || categoryColors.Other
+                                                                      }}
+                                                                 ></span>
 
-                                                            <h5>
-                                                                 ₹ {Number(amount).toLocaleString("en-IN")}
-                                                            </h5>
-                                                       </div>
-                                                  ))
+                                                                 <p>
+                                                                      {category}
+                                                                      <small className="percentage-text mx-3">
+                                                                           {percentage}%
+                                                                      </small>
+                                                                 </p>
+
+                                                                 <h5>
+                                                                      ₹ {Number(amount).toLocaleString("en-IN")}
+                                                                 </h5>
+                                                            </div>
+                                                       );
+                                                  })
                                              ) : (
                                                   <p>No expense data found.</p>
                                              )}
