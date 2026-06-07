@@ -3,45 +3,45 @@ import "../css/expense.css";
 import Toast from "../components/toast";
 
 export default function Expense() {
-     // ===============================
+     
      // Expense Data
-     // ===============================
+     
      const [expenses, setExpenses] = useState([]);
 
-     // ===============================
+     
      // Form States
      // Used for both Add and Edit
-     // ===============================
+     
      const [title, setTitle] = useState("");
      const [amount, setAmount] = useState("");
      const [category, setCategory] = useState("");
      const [date, setDate] = useState("");
      const [description, setDescription] = useState("");
 
-     // ===============================
+     
      // UI States
-     // ===============================
+     
      const [loading, setLoading] = useState(false);
      const [showToast, setShowToast] = useState(false);
      const [toastMessage, setToastMessage] = useState("");
      const [toastMessageType, setToastMessageType] = useState("");
 
-     // ===============================
+     
      // Add / Edit Overlay States
-     // ===============================
+     
      const [showExpenseOverlay, setShowExpenseOverlay] = useState(false);
      const [isEditing, setIsEditing] = useState(false);
      const [editExpenseId, setEditExpenseId] = useState(null);
 
-     // ===============================
+     
      // Delete Overlay States
-     // ===============================
+     
      const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
      const [selectedExpenseId, setSelectedExpenseId] = useState(null);
 
-     // ===============================
+     
      // Filter / Sort / Pagination States
-     // ===============================
+     
      const [searchText, setSearchText] = useState("");
      const [selectedCategory, setSelectedCategory] = useState("All Categories");
      const [fromDate, setFromDate] = useState("");
@@ -65,10 +65,10 @@ export default function Expense() {
           "Other"
      ];
 
-     // ===============================
+     
      // Indian Date Helper
      // Blocks future dates based on India timezone
-     // ===============================
+     
      const getIndianDate = () => {
           return new Intl.DateTimeFormat("en-CA", {
                timeZone: "Asia/Kolkata",
@@ -78,9 +78,9 @@ export default function Expense() {
           }).format(new Date());
      };
 
-     // ===============================
+     
      // Fetch Expenses
-     // ===============================
+     
      const fetchExpenses = async () => {
           try {
                const response = await fetch("http://localhost:1500/expense/get", {
@@ -113,9 +113,9 @@ export default function Expense() {
           fetchExpenses();
      }, []);
 
-     // ===============================
+     
      // Summary Calculations
-     // ===============================
+     
      const totalRecords = expenses.length;
 
      const currentMonth = new Date().getMonth();
@@ -145,9 +145,9 @@ export default function Expense() {
           ? totalExpense / expenses.length
           : 0;
 
-     // ===============================
+     
      // Filter Expenses
-     // ===============================
+     
      const filteredExpenses = expenses.filter((expense) => {
           const expenseTitle = expense.title?.toLowerCase() || "";
           const expenseCategory = expense.category || "";
@@ -168,9 +168,9 @@ export default function Expense() {
           return searchMatch && categoryMatch && fromDateMatch && toDateMatch;
      });
 
-     // ===============================
+     
      // Sort Expenses
-     // ===============================
+     
      const sortedExpenses = [...filteredExpenses].sort((a, b) => {
           if (sortBy === "latest") {
                return new Date(b.expense_date || b.created_at) - new Date(a.expense_date || a.created_at);
@@ -199,9 +199,9 @@ export default function Expense() {
           return 0;
      });
 
-     // ===============================
+     
      // Pagination
-     // ===============================
+     
      const totalPages = Math.ceil(sortedExpenses.length / itemsPerPage);
 
      const paginatedExpenses = sortedExpenses.slice(
@@ -209,9 +209,9 @@ export default function Expense() {
           currentPage * itemsPerPage
      );
 
-     // ===============================
+     
      // Reset Form
-     // ===============================
+     
      const resetForm = () => {
           setTitle("");
           setAmount("");
@@ -222,17 +222,17 @@ export default function Expense() {
           setEditExpenseId(null);
      };
 
-     // ===============================
+     
      // Open Add Overlay
-     // ===============================
+     
      const openAddOverlay = () => {
           resetForm();
           setShowExpenseOverlay(true);
      };
 
-     // ===============================
+     
      // Open Edit Overlay With Existing Data
-     // ===============================
+     
      const openEditOverlay = (expense) => {
           setIsEditing(true);
           setEditExpenseId(expense.expense_id || expense.id);
@@ -250,9 +250,9 @@ export default function Expense() {
           setShowExpenseOverlay(true);
      };
 
-     // ===============================
+     
      // Add / Update Expense
-     // ===============================
+     
      const handleSubmitExpense = async (e) => {
           e.preventDefault();
 
@@ -311,9 +311,9 @@ export default function Expense() {
           }
      };
 
-     // ===============================
+     
      // Delete Expense
-     // ===============================
+     
      const handleDelete = async () => {
           if (!selectedExpenseId) return;
 
@@ -352,9 +352,9 @@ export default function Expense() {
           }
      };
 
-     // ===============================
+     
      // Reset Filters
-     // ===============================
+     
      const resetFilters = () => {
           setSearchText("");
           setSelectedCategory("All Categories");

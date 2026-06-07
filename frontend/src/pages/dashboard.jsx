@@ -4,13 +4,26 @@ import React from "react";
 import "../css/dashboard.css";
 import Toast from "../components/toast";
 import { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
+import { Pie, Bar } from "react-chartjs-2";
+
 import {
      Chart as ChartJS,
      ArcElement,
+     BarElement,
+     CategoryScale,
+     LinearScale,
      Tooltip,
      Legend
 } from "chart.js";
+
+ChartJS.register(
+     ArcElement,
+     BarElement,
+     CategoryScale,
+     LinearScale,
+     Tooltip,
+     Legend
+);
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -266,7 +279,11 @@ const Dashboard = () => {
      const currentDate = new Date();
 
      const lastSixMonths = Array.from({ length: 6 }, (_, index) => {
-          const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - (5 - index), 1);
+          const date = new Date(
+               currentDate.getFullYear(),
+               currentDate.getMonth() - (5 - index),
+               1
+          );
 
           return {
                month: monthNames[date.getMonth()],
@@ -277,7 +294,7 @@ const Dashboard = () => {
      });
 
      expenses.forEach((expense) => {
-          const expenseDate = new Date(expense.created_at);
+          const expenseDate = new Date(expense.expense_date || expense.created_at);
           const amount = Number(expense.amount || 0);
 
           const matchedMonth = lastSixMonths.find(
@@ -291,8 +308,53 @@ const Dashboard = () => {
           }
      });
 
-     const maxMonthlyExpense = Math.max(...lastSixMonths.map((item) => item.total), 1);
+     const monthlyBarData = {
+          labels: lastSixMonths.map((item) => item.month),
+          datasets: [
+               {
+                    label: "Monthly Expense",
+                    data: lastSixMonths.map((item) => item.total),
+                    backgroundColor: "#0ea5e9",
+                    borderRadius: 12,
+                    barThickness: 35
+               }
+          ]
+     };
 
+     const monthlyBarOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+               legend: {
+                    display: false
+               },
+               tooltip: {
+                    callbacks: {
+                         label: function (context) {
+                              return `₹ ${Number(context.raw).toLocaleString("en-IN")}`;
+                         }
+                    }
+               }
+          },
+          scales: {
+               x: {
+                    grid: {
+                         display: false
+                    }
+               },
+               y: {
+                    beginAtZero: true,
+                    ticks: {
+                         callback: function (value) {
+                              return `₹${Number(value).toLocaleString("en-IN")}`;
+                         }
+                    }
+               }
+          }
+     };
+
+
+     // handle edit click
      const handleEditClick = (expense) => {
           setEditExpenseId(expense.expense_id || expense.id);
 
@@ -456,7 +518,7 @@ const Dashboard = () => {
                                    <div>
 
                                         <h5>Total Expenses</h5>
-                                             
+
                                         <h2>₹ {monthlyTotalExpense}</h2>
                                         <small>{currentMonth + 1}/{currentYear}</small>
 
@@ -559,7 +621,7 @@ const Dashboard = () => {
                                    </div>
                               </div>
 
-                              {/* Graph */}
+                              {/* Bar Graph */}
 
                               <div className="glass-card">
                                    <div className="card-title">
@@ -572,29 +634,8 @@ const Dashboard = () => {
                                         </button>
                                    </div>
 
-                                   <div className="bar-graph-container">
-                                        {lastSixMonths.map((item) => {
-                                             const barHeight = (item.total / maxMonthlyExpense) * 100;
-
-                                             return (
-                                                  <div className="bar-item" key={`${item.month}-${item.year}`}>
-                                                       <div className="bar-value">
-                                                            ₹{Number(item.total).toLocaleString("en-IN")}
-                                                       </div>
-
-                                                       <div className="bar-track">
-                                                            <div
-                                                                 className="bar-fill"
-                                                                 style={{
-                                                                      height: `${barHeight}%`
-                                                                 }}
-                                                            ></div>
-                                                       </div>
-
-                                                       <p>{item.month}</p>
-                                                  </div>
-                                             );
-                                        })}
+                                   <div className="monthly-bar-chart">
+                                        <Bar data={monthlyBarData} options={monthlyBarOptions} />
                                    </div>
                               </div>
 

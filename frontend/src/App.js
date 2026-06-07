@@ -6,6 +6,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import Dashboard from './pages/dashboard';
 import Expense from './pages/expense';
+import Analytics from './pages/analytics';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/register' element={<Register/>} />
         <Route path='/dashboard' element={<Dashboard/>} />
         <Route path='/expenses' element={<Expense/>} />
+        <Route path='/analytics' element={<Analytics/>} />
       </Routes>
     </Router>
     </>
