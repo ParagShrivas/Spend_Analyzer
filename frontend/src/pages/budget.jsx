@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../css/budget.css";
+import { useExpenses } from "../context/ExpenseContext";
 import Toast from "../components/toast";
 
 export default function Budget() {
-     
+
      // States
-     
-     const [expenses, setExpenses] = useState([]);
+
+     const { expenses, setExpenses, fetchExpenses, expenseLoading } = useExpenses();
 
      const [monthlyBudget, setMonthlyBudget] = useState(0);
 
@@ -16,9 +17,9 @@ export default function Budget() {
      const [toastMessage, setToastMessage] = useState("");
      const [toastMessageType, setToastMessageType] = useState("");
 
-     
+
      // Categories
-     
+
      const categories = [
           "Food & Dining",
           "Travel",
@@ -47,44 +48,8 @@ export default function Budget() {
           "Other": "#64748b"
      };
 
-     
-     // Fetch Expenses
-     
-     const fetchExpenses = async () => {
-          try {
-               const response = await fetch("http://localhost:1500/expense/get", {
-                    method: "GET",
-                    headers: {
-                         "Content-Type": "application/json"
-                    },
-                    credentials: "include"
-               });
-
-               const data = await response.json();
-
-               if (response.ok) {
-                    setExpenses(data);
-               } else {
-                    setShowToast(true);
-                    setToastMessage(data.message || "Error fetching expenses!");
-                    setToastMessageType("error");
-               }
-          } catch (error) {
-               console.error("Error fetching expenses:", error);
-
-               setShowToast(true);
-               setToastMessage("Backend server not reachable!");
-               setToastMessageType("error");
-          }
-     };
-
-     useEffect(() => {
-          fetchExpenses();
-     }, []);
-
-     
      // Current Month Expenses
-     
+
      const currentMonth = new Date().getMonth();
      const currentYear = new Date().getFullYear();
 
@@ -107,9 +72,9 @@ export default function Budget() {
      const budgetUsedPercent =
           monthlyBudget > 0 ? Math.min((monthlySpent / monthlyBudget) * 100, 100) : 0;
 
-     
+
      // Category Wise Monthly Spending
-     
+
      const categoryTotals = currentMonthExpenses.reduce((acc, expense) => {
           const category = expense.category || "Other";
           const amount = Number(expense.amount || 0);
@@ -122,10 +87,41 @@ export default function Budget() {
      const highestCategory =
           Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0] || ["-", 0];
 
-     
+     // fetch budget
+     const fetchBudget = async () => {
+          try {
+               const response = await fetch("http://localhost:1500/budget/get", {
+                    method: 'GET',
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               })
+
+               const data = await response.json();
+
+               if (response.ok) {
+                    if (data.length > 0) {
+                         setMonthlyBudget(data[0].budget_amount);
+                    }
+               } else {
+                    setShowToast(true);
+                    setToastMessage("Error fetching budget!");
+                    setToastMessageType("error");
+               }
+          } catch (error) {
+               console.log('Error', error);
+          }
+     }
+
+     // mount budget 
+     useState(()=>{
+          fetchBudget()
+     })
+
      // Update Budget
-     
-     const handleBudgetUpdate = (e) => {
+
+     const handleBudgetUpdate = async(e) => {
           e.preventDefault();
 
           if (!newBudget || Number(newBudget) <= 0) {
@@ -135,11 +131,11 @@ export default function Budget() {
                return;
           }
 
-          try{
-               const response = fetch("http://localhost:1500/user/update-budget", {
+          try {
+               const response = await fetch("http://localhost:1500/budget/update", {
                     method: "POST",
-                    headers:{
-                         contentType: "application/json"
+                    headers: {
+                         "Content-Type": "application/json"
                     },
                     credentials: "include",
                     body: JSON.stringify({
@@ -147,8 +143,8 @@ export default function Budget() {
                     })
                });
 
-               const data = response.json();
-               if(!response.ok){
+               const data = await response.json();
+               if (!response.ok) {
                     setShowToast(true);
                     setToastMessage(data.message || "Error updating budget!");
                     setToastMessageType("error");
@@ -161,7 +157,7 @@ export default function Budget() {
                setShowToast(true);
                setToastMessage("Monthly budget updated successfully!");
                setToastMessageType("success");
-          }catch(error){
+          } catch (error) {
                console.error("Error updating budget:", error);
                setShowToast(true);
                setToastMessage("Error updating budget!");
@@ -170,7 +166,6 @@ export default function Budget() {
           }
 
           setMonthlyBudget(Number(newBudget));
-          localStorage.setItem("monthlyBudget", Number(newBudget));
 
           setNewBudget("");
 
@@ -209,7 +204,7 @@ export default function Budget() {
 
                          <div>
                               <h5>Monthly Budget</h5>
-                              <h3>₹ {monthlyBudget.toLocaleString("en-IN")}</h3>
+                              <h3>₹ {Number(monthlyBudget).toLocaleString("en-IN")}</h3>
                          </div>
                     </div>
 

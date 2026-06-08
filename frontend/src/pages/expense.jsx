@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../css/expense.css";
+import {useExpenses} from '../context/ExpenseContext';
 import Toast from "../components/toast";
 
 export default function Expense() {
      
      // Expense Data
      
-     const [expenses, setExpenses] = useState([]);
+     const { expenses, setExpenses, fetchExpenses, expenseLoading } = useExpenses();
 
      
      // Form States
@@ -77,42 +78,6 @@ export default function Expense() {
                day: "2-digit"
           }).format(new Date());
      };
-
-     
-     // Fetch Expenses
-     
-     const fetchExpenses = async () => {
-          try {
-               const response = await fetch("http://localhost:1500/expense/get", {
-                    method: "GET",
-                    headers: {
-                         "Content-Type": "application/json"
-                    },
-                    credentials: "include"
-               });
-
-               const data = await response.json();
-
-               if (response.ok) {
-                    setExpenses(data);
-               } else {
-                    setShowToast(true);
-                    setToastMessage(data.message || "Error fetching expenses!");
-                    setToastMessageType("error");
-               }
-          } catch (error) {
-               console.error("Error fetching expenses:", error);
-
-               setShowToast(true);
-               setToastMessage("Backend server not reachable!");
-               setToastMessageType("error");
-          }
-     };
-
-     useEffect(() => {
-          fetchExpenses();
-     }, []);
-
      
      // Summary Calculations
      

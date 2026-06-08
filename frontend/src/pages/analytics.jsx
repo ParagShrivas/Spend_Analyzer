@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../css/analytics.css";
+import {useExpenses} from '../context/ExpenseContext';
 import Toast from "../components/toast";
 
 import {
@@ -28,7 +29,7 @@ ChartJS.register(
 );
 
 export default function Analytics() {
-     const [expenses, setExpenses] = useState([]);
+     const { expenses, setExpenses, fetchExpenses, expenseLoading } = useExpenses();
 
      const [showToast, setShowToast] = useState(false);
      const [toastMessage, setToastMessage] = useState("");
@@ -61,39 +62,6 @@ export default function Analytics() {
           "Investment": "#6366f1",
           "Other": "#64748b"
      };
-
-     // fetch all expenses of the user from backend
-     const fetchExpenses = async () => {
-          try {
-               const response = await fetch("http://localhost:1500/expense/get", {
-                    method: "GET",
-                    headers: {
-                         "Content-Type": "application/json"
-                    },
-                    credentials: "include"
-               });
-
-               const data = await response.json();
-
-               if (response.ok) {
-                    setExpenses(data);
-               } else {
-                    setShowToast(true);
-                    setToastMessage(data.message || "Error fetching analytics data!");
-                    setToastMessageType("error");
-               }
-          } catch (error) {
-               console.error("Error fetching analytics:", error);
-
-               setShowToast(true);
-               setToastMessage("Backend server not reachable!");
-               setToastMessageType("error");
-          }
-     };
-
-     useEffect(() => {
-          fetchExpenses();
-     }, []);
 
 
      // Basic Calculations

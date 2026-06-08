@@ -3,6 +3,7 @@
 import React from "react";
 import "../css/dashboard.css";
 import Toast from "../components/toast";
+import {useExpenses} from '../context/ExpenseContext';
 import { useState, useEffect } from "react";
 import { Pie, Bar } from "react-chartjs-2";
 
@@ -29,7 +30,10 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
      // expense
-     const [expenses, setExpenses] = useState([]);
+     const { expenses, setExpenses, fetchExpenses, expenseLoading } = useExpenses();
+
+     // budget
+     const [budget, setBudget] = useState(0)
 
      // form
      const [title, setTitle] = useState("");
@@ -179,34 +183,36 @@ const Dashboard = () => {
           }
      }
 
-     // load expenses on component mount
-     const fetchExpenses = async () => {
-          // Fetch expenses and stats here
+     // fetch budget
+     const fetchBudget = async () => {
           try {
-               const response = await fetch("http://localhost:1500/expense/get", {
-                    method: "GET",
+               const response = await fetch("http://localhost:1500/budget/get", {
+                    method: 'GET',
                     headers: {
                          "Content-Type": "application/json"
                     },
                     credentials: "include"
-               });
+               })
 
                const data = await response.json();
 
                if (response.ok) {
-                    setExpenses(data);
+                    if (data.length > 0) {
+                         setBudget(data[0].budget_amount);
+                    }
                } else {
                     setShowToast(true);
-                    setToastMessage("Error fetching expenses!");
+                    setToastMessage("Error fetching budget!");
                     setToastMessageType("error");
                }
           } catch (error) {
-               console.error("Error fetching data:", error);
+               console.log('Error', error);
           }
      }
 
      useEffect(() => {
-          fetchExpenses();
+          // fetchExpenses();
+          fetchBudget();
      }, [])
 
      const categoryColors = {
@@ -494,72 +500,72 @@ const Dashboard = () => {
                          <div className="stats-grid">
 
                               <div className="stats-card">
-
                                    <div className="stats-icon blue">
                                         <i className="fa-solid fa-wallet"></i>
                                    </div>
 
                                    <div>
+                                        <h5>Lifetime Expense</h5>
 
-                                        <h5>Total Balance</h5>
-
-                                        <h2>₹ 50,000</h2>
-
+                                        <h2>
+                                             ₹ {totalExpense.toLocaleString("en-IN")}
+                                        </h2>
                                    </div>
-
                               </div>
 
                               <div className="stats-card">
-
                                    <div className="stats-icon orange">
                                         <i className="fa-solid fa-arrow-trend-up"></i>
                                    </div>
 
                                    <div>
-
                                         <h5>Total Expenses</h5>
 
-                                        <h2>₹ {monthlyTotalExpense}</h2>
+                                        <h2>
+                                             ₹ {Number(monthlyTotalExpense || 0).toLocaleString("en-IN")}
+                                        </h2>
+
                                         <small>{currentMonth + 1}/{currentYear}</small>
-
                                    </div>
-
                               </div>
 
                               <div className="stats-card">
-
                                    <div className="stats-icon purple">
                                         <i className="fa-solid fa-chart-pie"></i>
                                    </div>
 
                                    <div>
-
                                         <h5>Monthly Budget</h5>
 
-                                        <h2>₹ 25,000</h2>
+                                        <h2>
+                                             ₹ {Number(budget || 0).toLocaleString("en-IN")}
+                                        </h2>
 
+                                        <small>{currentMonth + 1}/{currentYear}</small>
                                    </div>
-
                               </div>
 
                               <div className="stats-card">
-
-                                   <div className="stats-icon greenbg">
-                                        <i className="fa-solid fa-wallet"></i>
+                                   <div className={Number(budget || 0) - Number(monthlyTotalExpense || 0) >= 0 ? "stats-icon greenbg" : "stats-icon redbg"}>
+                                        <i className="fa-solid fa-piggy-bank"></i>
                                    </div>
 
                                    <div>
-
                                         <h5>Remaining Budget</h5>
 
-                                        <h2>₹ 6,500</h2>
+                                        <h2>
+                                             ₹ {(Number(budget || 0) - Number(monthlyTotalExpense || 0)).toLocaleString("en-IN")}
+                                        </h2>
 
+                                        <small>
+                                             {Number(budget || 0) - Number(monthlyTotalExpense || 0) >= 0
+                                                  ? "Within budget"
+                                                  : "Budget exceeded"}
+                                        </small>
                                    </div>
-
                               </div>
 
                          </div>
-
                          {/* Charts */}
 
                          <div className="chart-grid">
