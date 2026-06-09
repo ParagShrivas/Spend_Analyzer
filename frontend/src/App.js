@@ -9,6 +9,7 @@ import Dashboard from './pages/dashboard';
 import Expense from './pages/expense';
 import Analytics from './pages/analytics';
 import Budget from './pages/budget';
+import Reports from './pages/reports';
 import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path='/expenses' element={<Expense />} />
             <Route path='/analytics' element={<Analytics />} />
             <Route path='/budget' element={<Budget />} />
+            <Route path="/reports" element={<Reports />} />
           </Routes>
         </ExpenseProvider>
       </Router>

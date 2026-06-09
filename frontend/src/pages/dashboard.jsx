@@ -3,7 +3,7 @@
 import React from "react";
 import "../css/dashboard.css";
 import Toast from "../components/toast";
-import {useExpenses} from '../context/ExpenseContext';
+import { useExpenses } from '../context/ExpenseContext';
 import { useState, useEffect } from "react";
 import { Pie, Bar } from "react-chartjs-2";
 
@@ -211,7 +211,7 @@ const Dashboard = () => {
      }
 
      useEffect(() => {
-          // fetchExpenses();
+          fetchExpenses();
           fetchBudget();
      }, [])
 
@@ -434,16 +434,36 @@ const Dashboard = () => {
      const currentMonth = new Date().getMonth();
      const currentYear = new Date().getFullYear();
 
-     const monthlyTotalExpense = expenses
-          .filter((expense) => {
-               const expenseDate = new Date(expense.expense_date || expense.created_at);
+     // Get only current month expenses
+     const currentMonthExpenses = expenses.filter((expense) => {
+          const expenseDate = new Date(expense.expense_date || expense.created_at);
 
-               return (
-                    expenseDate.getMonth() === currentMonth &&
-                    expenseDate.getFullYear() === currentYear
-               );
-          })
-          .reduce((total, expense) => total + Number(expense.amount || 0), 0);
+          return (
+               expenseDate.getMonth() === currentMonth &&
+               expenseDate.getFullYear() === currentYear
+          );
+     });
+
+     // Current month total expense
+     const monthlyTotalExpense = currentMonthExpenses.reduce(
+          (total, expense) => total + Number(expense.amount || 0),
+          0
+     );
+
+     // Category wise total for current month
+     const currentMonthCategoryTotals = currentMonthExpenses.reduce((acc, expense) => {
+          const category = expense.category || "Other";
+          const amount = Number(expense.amount || 0);
+
+          acc[category] = (acc[category] || 0) + amount;
+
+          return acc;
+     }, {});
+
+     // Highest spending category this month
+     const highestCategory = Object.entries(currentMonthCategoryTotals).sort(
+          (a, b) => b[1] - a[1]
+     )[0] || ["No Data", 0];
 
      return (
 
@@ -521,9 +541,9 @@ const Dashboard = () => {
                                    <div>
                                         <h5>Total Expenses</h5>
 
-                                        <h2>
+                                        <h3>
                                              ₹ {Number(monthlyTotalExpense || 0).toLocaleString("en-IN")}
-                                        </h2>
+                                        </h3>
 
                                         <small>{currentMonth + 1}/{currentYear}</small>
                                    </div>
@@ -537,30 +557,28 @@ const Dashboard = () => {
                                    <div>
                                         <h5>Monthly Budget</h5>
 
-                                        <h2>
+                                        <h3>
                                              ₹ {Number(budget || 0).toLocaleString("en-IN")}
-                                        </h2>
+                                        </h3>
 
                                         <small>{currentMonth + 1}/{currentYear}</small>
                                    </div>
                               </div>
 
                               <div className="stats-card">
-                                   <div className={Number(budget || 0) - Number(monthlyTotalExpense || 0) >= 0 ? "stats-icon greenbg" : "stats-icon redbg"}>
-                                        <i className="fa-solid fa-piggy-bank"></i>
+                                   <div className="stats-icon greenbg">
+                                        <i className="fa-solid fa-ranking-star"></i>
                                    </div>
 
                                    <div>
-                                        <h5>Remaining Budget</h5>
+                                        <h5>Highest Category</h5>
 
-                                        <h2>
-                                             ₹ {(Number(budget || 0) - Number(monthlyTotalExpense || 0)).toLocaleString("en-IN")}
-                                        </h2>
+                                        <h6 style={{fontSize:'15.5px'}}>
+                                             {highestCategory[0]}
+                                        </h6>
 
                                         <small>
-                                             {Number(budget || 0) - Number(monthlyTotalExpense || 0) >= 0
-                                                  ? "Within budget"
-                                                  : "Budget exceeded"}
+                                             ₹ {Number(highestCategory[1]).toLocaleString("en-IN")} this month
                                         </small>
                                    </div>
                               </div>
@@ -672,7 +690,6 @@ const Dashboard = () => {
                               </div>
 
                          </div>
-
                          {/* Add Expense Form */}
                          <form onSubmit={handleExpense}>
 
@@ -848,6 +865,7 @@ const Dashboard = () => {
                               </button>
 
                          </form>
+
 
                     </div>
 

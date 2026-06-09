@@ -38,9 +38,9 @@ const Sidebar = () => {
                               <span>Budget</span>
                          </div>
 
-                         <div className="menu-item" onClick={() => navigate("/transactions")}>
-                              <i className="fa-solid fa-receipt"></i>
-                              <span>Transactions</span>
+                         <div className="menu-item" onClick={() => navigate("/reports")}>
+                              <i className="fa-solid fa-file-export"></i>
+                              <span>Reports</span>
                          </div>
 
                          <div className="menu-item" onClick={() => navigate("/settings")}>
