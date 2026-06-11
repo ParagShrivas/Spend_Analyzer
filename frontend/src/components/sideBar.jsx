@@ -38,6 +38,11 @@ const Sidebar = () => {
                               <span>Budget</span>
                          </div>
 
+                         <div className="menu-item" onClick={() => navigate("/reminders")}>
+                              <i className="fa-solid fa-bell"></i>
+                              <span>Reminders</span>
+                         </div>
+                         
                          <div className="menu-item" onClick={() => navigate("/reports")}>
                               <i className="fa-solid fa-file-export"></i>
                               <span>Reports</span>
