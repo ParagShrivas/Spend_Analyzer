@@ -2,6 +2,7 @@ const express = require("express");
 const userRoutes = require('./routes/userRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -19,5 +20,6 @@ app.use(
 app.use('/user',userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/budget', budgetRoutes);
+app.use('/notification', notificationRoutes);
 
 module.exports = app;

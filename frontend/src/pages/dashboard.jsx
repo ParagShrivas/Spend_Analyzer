@@ -32,6 +32,9 @@ const Dashboard = () => {
      // expense
      const { expenses, setExpenses, fetchExpenses, expenseLoading } = useExpenses();
 
+     // notifications
+     const [notifications, setNotifications] = useState([]);
+
      // budget
      const [budget, setBudget] = useState(0)
 
@@ -99,6 +102,29 @@ const Dashboard = () => {
           "Salary": "💰",
           "Investment": "📈",
           "Other": "📦"
+     };
+
+     // fetch notifications
+     const fetchNotifications = async () => {
+          try {
+               const response = await fetch("http://localhost:1500/notification/get", {
+                    method: "GET",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
+
+               const data = await response.json();
+
+               if (response.ok) {
+                    setNotifications(data);
+               } else {
+                    console.error("Error fetching notifications:", data.message);
+               }
+          } catch (error) {
+               console.error("Error fetching notifications:", error);
+          }
      };
 
      // add expense
@@ -213,6 +239,7 @@ const Dashboard = () => {
      useEffect(() => {
           fetchExpenses();
           fetchBudget();
+          fetchNotifications();
      }, [])
 
      const categoryColors = {
@@ -488,19 +515,14 @@ const Dashboard = () => {
 
                     <div className="header-right">
 
-                         <div className="search-box">
-
-                              <i className="fa-solid fa-magnifying-glass"></i>
-
-                              <input
-                                   type="text"
-                                   placeholder="Search expenses..."
-                              />
-
-                         </div>
-
-                         <div className="header-icon">
+                         <div className="header-icon notification-header-icon">
                               <i className="fa-regular fa-bell"></i>
+
+                              {notifications.length >= 0 && (
+                                   <span className="notification-count">
+                                        {notifications.length}
+                                   </span>
+                              )}
                          </div>
 
                     </div>
@@ -573,7 +595,7 @@ const Dashboard = () => {
                                    <div>
                                         <h5>Highest Category</h5>
 
-                                        <h6 style={{fontSize:'15.5px'}}>
+                                        <h6 style={{ fontSize: '15.5px' }}>
                                              {highestCategory[0]}
                                         </h6>
 
