@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/reminders.css";
 import Toast from "../components/toast";
 
@@ -12,41 +12,13 @@ export default function Reminders() {
      const [time, setTime] = useState("");
      const [note, setNote] = useState("");
 
-     const [items, setItems] = useState([
-          {
-               id: 1,
-               type: "reminder",
-               title: "Review monthly expenses",
-               category: "Personal",
-               amount: "",
-               date: "2026-06-18",
-               time: "10:30",
-               note: "Check spending summary and update budget.",
-               status: "upcoming"
-          },
-          {
-               id: 2,
-               type: "alert",
-               title: "Electricity bill due",
-               category: "Bills & Utilities",
-               amount: 1800,
-               date: "2026-06-15",
-               time: "09:00",
-               note: "Pay before due date to avoid late fee.",
-               status: "urgent"
-          },
-          {
-               id: 3,
-               type: "alert",
-               title: "Internet bill payment",
-               category: "Bills & Utilities",
-               amount: 799,
-               date: "2026-06-22",
-               time: "11:00",
-               note: "Monthly broadband bill reminder.",
-               status: "upcoming"
-          }
-     ]);
+     const [items, setItems] = useState([]);
+     const [upcomingItems, setUpcomingItems] = useState([]);
+
+     const [pageLoading, setPageLoading] = useState(false);
+     const [submitting, setSubmitting] = useState(false);
+     const [refreshing, setRefreshing] = useState(false);
+     const [actionLoadingId, setActionLoadingId] = useState(null);
 
      const [showToast, setShowToast] = useState(false);
      const [toastMessage, setToastMessage] = useState("");
@@ -73,12 +45,19 @@ export default function Reminders() {
           day: "2-digit"
      }).format(new Date());
 
-     const reminderItems = items.filter((item) => item.type === "reminder");
-     const alertItems = items.filter((item) => item.type === "alert");
+     const showMessage = (message, type) => {
+          setShowToast(true);
+          setToastMessage(message);
+          setToastMessageType(type);
+     };
 
-     const urgentAlerts = alertItems.filter((item) => item.status === "urgent");
-
-     const filteredItems = items.filter((item) => item.type === activeTab);
+     const safeJson = async (response) => {
+          try {
+               return await response.json();
+          } catch {
+               return {};
+          }
+     };
 
      const clearForm = () => {
           setTitle("");
@@ -89,48 +68,17 @@ export default function Reminders() {
           setNote("");
      };
 
-     const handleSubmit = (e) => {
-          e.preventDefault();
+     const getStatus = (type, itemDate) => {
+          const selected = new Date(itemDate);
+          const current = new Date(today);
 
-          if (!title || !date) {
-               setShowToast(true);
-               setToastMessage("Please enter title and date!");
-               setToastMessageType("error");
-               return;
-          }
-
-          const selectedDate = new Date(date);
-          const currentDate = new Date(today);
-
-          const diffTime = selectedDate - currentDate;
+          const diffTime = selected - current;
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-          const newItem = {
-               id: Date.now(),
-               type: activeTab,
-               title,
-               category: category || "Other",
-               amount,
-               date,
-               time,
-               note,
-               status: activeTab === "alert" && diffDays <= 3 ? "urgent" : "upcoming"
-          };
+          if (diffDays < 0) return "expired";
+          if (type === "alert" && diffDays <= 3) return "urgent";
 
-          setItems([newItem, ...items]);
-          clearForm();
-
-          setShowToast(true);
-          setToastMessage(activeTab === "alert" ? "Alert created successfully!" : "Reminder created successfully!");
-          setToastMessageType("success");
-     };
-
-     const handleDelete = (id) => {
-          setItems(items.filter((item) => item.id !== id));
-
-          setShowToast(true);
-          setToastMessage("Notification deleted successfully!");
-          setToastMessageType("success");
+          return "upcoming";
      };
 
      const getDateLabel = (itemDate) => {
@@ -147,6 +95,241 @@ export default function Reminders() {
           return `${diffDays} days left`;
      };
 
+     const getId = (item) => {
+          return item.notification_id || item.id;
+     };
+
+     const getItemDate = (item) => {
+          return item.notify_date || item.date;
+     };
+
+     const getItemTime = (item) => {
+          return item.notify_time || item.time;
+     };
+
+     const getItemAmount = (item) => {
+          return item.amount || "";
+     };
+
+     const fetchNotifications = async (showLoader = true) => {
+          if (showLoader) setPageLoading(true);
+
+          try {
+               const response = await fetch("http://localhost:1500/notification/get", {
+                    method: "GET",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
+
+               const data = await safeJson(response);
+
+               if (response.ok) {
+                    setItems(Array.isArray(data) ? data : data.notifications || []);
+               } else {
+                    showMessage(data.message || "Error fetching notifications!", "error");
+               }
+          } catch (error) {
+               console.error("Error fetching notifications:", error);
+               showMessage("Backend server not reachable!", "error");
+          } finally {
+               if (showLoader) setPageLoading(false);
+          }
+     };
+
+     const fetchUpcomingNotifications = async () => {
+          try {
+               const response = await fetch("http://localhost:1500/notification/upcoming", {
+                    method: "GET",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
+
+               const data = await safeJson(response);
+
+               if (response.ok) {
+                    setUpcomingItems(Array.isArray(data) ? data : data.notifications || []);
+               }
+          } catch (error) {
+               console.error("Error fetching upcoming notifications:", error);
+          }
+     };
+
+     useEffect(() => {
+          const loadData = async () => {
+               setPageLoading(true);
+
+               await Promise.all([
+                    fetchNotifications(false),
+                    fetchUpcomingNotifications()
+               ]);
+
+               setPageLoading(false);
+          };
+
+          loadData();
+     }, []);
+
+     const handleRefresh = async () => {
+          if (refreshing) return;
+
+          setRefreshing(true);
+
+          await Promise.all([
+               fetchNotifications(false),
+               fetchUpcomingNotifications()
+          ]);
+
+          setRefreshing(false);
+     };
+
+     const handleSubmit = async (e) => {
+          e.preventDefault();
+
+          if (submitting) return;
+
+          if (!title.trim() || !date) {
+               showMessage("Please enter title and date!", "error");
+               return;
+          }
+
+          if (activeTab === "alert" && amount && Number(amount) < 0) {
+               showMessage("Amount cannot be negative!", "error");
+               return;
+          }
+
+          setSubmitting(true);
+
+          try {
+               const response = await fetch("http://localhost:1500/notification/add", {
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                         type: activeTab,
+                         title: title.trim(),
+                         category: category || "Other",
+                         amount: activeTab === "alert" ? Number(amount || 0) : null,
+                         notifyDate: date,
+                         notifyTime: time || null,
+                         note: note.trim()
+                    })
+               });
+
+               const data = await safeJson(response);
+
+               if (response.ok) {
+                    clearForm();
+
+                    showMessage(
+                         data.message ||
+                              (activeTab === "alert"
+                                   ? "Alert created successfully!"
+                                   : "Reminder created successfully!"),
+                         "success"
+                    );
+
+                    await Promise.all([
+                         fetchNotifications(false),
+                         fetchUpcomingNotifications()
+                    ]);
+               } else {
+                    showMessage(data.message || "Error creating notification!", "error");
+               }
+          } catch (error) {
+               console.error("Error creating notification:", error);
+               showMessage("Backend server not reachable!", "error");
+          } finally {
+               setSubmitting(false);
+          }
+     };
+
+     const handleRead = async (id) => {
+          if (!id || actionLoadingId) return;
+
+          setActionLoadingId(id);
+
+          try {
+               const response = await fetch(`http://localhost:1500/notification/read/${id}`, {
+                    method: "PUT",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
+
+               const data = await safeJson(response);
+
+               if (response.ok) {
+                    await Promise.all([
+                         fetchNotifications(false),
+                         fetchUpcomingNotifications()
+                    ]);
+               } else {
+                    showMessage(data.message || "Error marking notification as read!", "error");
+               }
+          } catch (error) {
+               console.error("Error marking notification as read:", error);
+               showMessage("Error marking notification as read!", "error");
+          } finally {
+               setActionLoadingId(null);
+          }
+     };
+
+     const handleDelete = async (id) => {
+          if (!id || actionLoadingId) return;
+
+          setActionLoadingId(id);
+
+          try {
+               const response = await fetch(`http://localhost:1500/notification/delete/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                         "Content-Type": "application/json"
+                    },
+                    credentials: "include"
+               });
+
+               const data = await safeJson(response);
+
+               if (response.ok) {
+                    showMessage(data.message || "Notification deleted successfully!", "success");
+
+                    await Promise.all([
+                         fetchNotifications(false),
+                         fetchUpcomingNotifications()
+                    ]);
+               } else {
+                    showMessage(data.message || "Error deleting notification!", "error");
+               }
+          } catch (error) {
+               console.error("Error deleting notification:", error);
+               showMessage("Error deleting notification!", "error");
+          } finally {
+               setActionLoadingId(null);
+          }
+     };
+
+     const reminderItems = items.filter((item) => item.type === "reminder");
+     const alertItems = items.filter((item) => item.type === "alert");
+
+     const urgentAlerts = alertItems.filter((item) => {
+          const itemDate = getItemDate(item);
+          return getStatus("alert", itemDate) === "urgent";
+     });
+
+     const allItems = [...items].sort((a, b) => {
+          const dateA = new Date(`${getItemDate(a)} ${getItemTime(a) || "00:00"}`);
+          const dateB = new Date(`${getItemDate(b)} ${getItemTime(b) || "00:00"}`);
+
+          return dateA - dateB;
+     });
+
      return (
           <div className="notifications-page">
                <Toast
@@ -156,20 +339,18 @@ export default function Reminders() {
                     setShow={setShowToast}
                />
 
-               {/* Header */}
                <div className="notifications-header">
                     <div>
                          <h1>Reminders & Alerts</h1>
                          <p>Create reminders and bill alerts to stay updated before due dates.</p>
                     </div>
 
-                    <button>
-                         <i className="fa-solid fa-bell"></i>
-                         {items.length} Notifications
+                    <button onClick={handleRefresh} disabled={refreshing}>
+                         <i className={`fa-solid fa-rotate ${refreshing ? "spin-icon" : ""}`}></i>
+                         {refreshing ? "Refreshing..." : "Refresh"}
                     </button>
                </div>
 
-               {/* Stats */}
                <div className="notification-stats-grid">
                     <div className="notification-stat-card">
                          <div className="notification-stat-icon blue">
@@ -206,33 +387,34 @@ export default function Reminders() {
 
                     <div className="notification-stat-card">
                          <div className="notification-stat-icon greenbg">
-                              <i className="fa-solid fa-envelope"></i>
+                              <i className="fa-solid fa-bell"></i>
                          </div>
 
                          <div>
-                              <h5>Email Status</h5>
-                              <h3>Ready</h3>
+                              <h5>Upcoming</h5>
+                              <h3>{upcomingItems.length}</h3>
                          </div>
                     </div>
                </div>
 
-               {/* Main Grid */}
                <div className="notifications-main-grid">
-
-                    {/* Form */}
                     <div className="notification-form-card">
                          <div className="notification-tabs">
                               <button
+                                   type="button"
                                    className={activeTab === "reminder" ? "active" : ""}
                                    onClick={() => setActiveTab("reminder")}
+                                   disabled={submitting}
                               >
                                    <i className="fa-solid fa-clock"></i>
                                    Reminder
                               </button>
 
                               <button
+                                   type="button"
                                    className={activeTab === "alert" ? "active" : ""}
                                    onClick={() => setActiveTab("alert")}
+                                   disabled={submitting}
                               >
                                    <i className="fa-solid fa-bell"></i>
                                    Bill Alert
@@ -240,9 +422,7 @@ export default function Reminders() {
                          </div>
 
                          <div className="notification-form-title">
-                              <h3>
-                                   {activeTab === "alert" ? "Create Bill Alert" : "Create Reminder"}
-                              </h3>
+                              <h3>{activeTab === "alert" ? "Create Bill Alert" : "Create Reminder"}</h3>
                               <p>
                                    {activeTab === "alert"
                                         ? "Add bill due date and get notified before payment date."
@@ -258,6 +438,7 @@ export default function Reminders() {
                                         placeholder={activeTab === "alert" ? "Electricity bill due" : "Review expenses"}
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
+                                        disabled={submitting}
                                    />
                               </div>
 
@@ -267,8 +448,10 @@ export default function Reminders() {
                                         <select
                                              value={category}
                                              onChange={(e) => setCategory(e.target.value)}
+                                             disabled={submitting}
                                         >
                                              <option value="">Select Category</option>
+
                                              {categories.map((cat) => (
                                                   <option key={cat} value={cat}>
                                                        {cat}
@@ -285,6 +468,7 @@ export default function Reminders() {
                                                   placeholder="Bill amount"
                                                   value={amount}
                                                   onChange={(e) => setAmount(e.target.value)}
+                                                  disabled={submitting}
                                              />
                                         </div>
                                    )}
@@ -298,6 +482,7 @@ export default function Reminders() {
                                              min={today}
                                              value={date}
                                              onChange={(e) => setDate(e.target.value)}
+                                             disabled={submitting}
                                         />
                                    </div>
 
@@ -307,6 +492,7 @@ export default function Reminders() {
                                              type="time"
                                              value={time}
                                              onChange={(e) => setTime(e.target.value)}
+                                             disabled={submitting}
                                         />
                                    </div>
                               </div>
@@ -317,52 +503,90 @@ export default function Reminders() {
                                         placeholder="Write a short note..."
                                         value={note}
                                         onChange={(e) => setNote(e.target.value)}
+                                        disabled={submitting}
                                    ></textarea>
                               </div>
 
-                              <button className="save-notification-btn">
-                                   {activeTab === "alert" ? "Save Alert" : "Save Reminder"}
-                                   <i className="fa-solid fa-check"></i>
+                              <button
+                                   type="submit"
+                                   className="save-notification-btn"
+                                   disabled={submitting}
+                              >
+                                   {submitting ? (
+                                        <>
+                                             <span className="btn-spinner"></span>
+                                             Saving...
+                                        </>
+                                   ) : (
+                                        <>
+                                             {activeTab === "alert" ? "Save Alert" : "Save Reminder"}
+                                             <i className="fa-solid fa-check"></i>
+                                        </>
+                                   )}
                               </button>
                          </form>
                     </div>
 
-                    {/* Upcoming Box */}
                     <div className="notification-preview-card">
                          <div className="notification-card-title">
                               <div>
                                    <h3>Upcoming Notifications</h3>
-                                   <p>Dashboard preview style</p>
+                                   <p>Upcoming reminders and bill alerts</p>
                               </div>
 
-                              <span>{items.length}</span>
+                              <span>{upcomingItems.length}</span>
                          </div>
 
                          <div className="dashboard-notification-box">
-                              {items.slice(0, 4).map((item) => (
-                                   <div
-                                        className={`dashboard-notification-item ${item.status}`}
-                                        key={item.id}
-                                   >
-                                        <div className="dashboard-notification-icon">
-                                             <i
-                                                  className={
-                                                       item.type === "alert"
-                                                            ? "fa-solid fa-bell"
-                                                            : "fa-solid fa-clock"
-                                                  }
-                                             ></i>
-                                        </div>
-
-                                        <div>
-                                             <h4>{item.title}</h4>
-                                             <p>
-                                                  {getDateLabel(item.date)}
-                                                  {item.time ? ` • ${item.time}` : ""}
-                                             </p>
-                                        </div>
+                              {pageLoading ? (
+                                   <div className="notification-loader-box">
+                                        <span className="notification-loader"></span>
+                                        <p>Loading notifications...</p>
                                    </div>
-                              ))}
+                              ) : upcomingItems.length > 0 ? (
+                                   upcomingItems.slice(0, 4).map((item) => {
+                                        const itemDate = getItemDate(item);
+                                        const itemTime = getItemTime(item);
+                                        const status = getStatus(item.type, itemDate);
+                                        const id = getId(item);
+
+                                        return (
+                                             <div
+                                                  className={`dashboard-notification-item ${status}`}
+                                                  key={id}
+                                                  onClick={() => handleRead(id)}
+                                             >
+                                                  <div className="dashboard-notification-icon">
+                                                       {actionLoadingId === id ? (
+                                                            <span className="mini-spinner"></span>
+                                                       ) : (
+                                                            <i
+                                                                 className={
+                                                                      item.type === "alert"
+                                                                           ? "fa-solid fa-bell"
+                                                                           : "fa-solid fa-clock"
+                                                                 }
+                                                            ></i>
+                                                       )}
+                                                  </div>
+
+                                                  <div>
+                                                       <h4>{item.title}</h4>
+                                                       <p>
+                                                            {getDateLabel(itemDate)}
+                                                            {itemTime ? ` • ${itemTime}` : ""}
+                                                       </p>
+                                                  </div>
+                                             </div>
+                                        );
+                                   })
+                              ) : (
+                                   <div className="empty-notification">
+                                        <i className="fa-solid fa-bell-slash"></i>
+                                        <h3>No upcoming notifications</h3>
+                                        <p>Create reminders or alerts using the form.</p>
+                                   </div>
+                              )}
                          </div>
 
                          <div className="notification-mail-preview">
@@ -375,77 +599,128 @@ export default function Reminders() {
                     </div>
                </div>
 
-               {/* List */}
                <div className="notifications-list-card">
                     <div className="notification-card-title">
                          <div>
-                              <h3>
-                                   {activeTab === "alert" ? "Bill Alerts" : "Reminders"}
-                              </h3>
-                              <p>
-                                   Manage your {activeTab === "alert" ? "upcoming bill alerts" : "personal reminders"}.
-                              </p>
+                              <h3>All Reminders & Alerts</h3>
+                              <p>Manage all your reminders and bill alerts in one place.</p>
                          </div>
 
-                         <span>{filteredItems.length}</span>
+                         <span>{allItems.length}</span>
                     </div>
 
                     <div className="notifications-list">
-                         {filteredItems.length > 0 ? (
-                              filteredItems.map((item) => (
-                                   <div className={`notification-list-item ${item.status}`} key={item.id}>
-                                        <div className="notification-list-left">
-                                             <div className="notification-list-icon">
-                                                  <i
-                                                       className={
-                                                            item.type === "alert"
-                                                                 ? "fa-solid fa-file-invoice-dollar"
-                                                                 : "fa-solid fa-calendar-check"
-                                                       }
-                                                  ></i>
+                         {pageLoading ? (
+                              <div className="notification-loader-box">
+                                   <span className="notification-loader"></span>
+                                   <p>Loading reminders and alerts...</p>
+                              </div>
+                         ) : allItems.length > 0 ? (
+                              allItems.map((item) => {
+                                   const itemDate = getItemDate(item);
+                                   const itemTime = getItemTime(item);
+                                   const itemAmount = getItemAmount(item);
+                                   const status = getStatus(item.type, itemDate);
+                                   const id = getId(item);
+
+                                   return (
+                                        <div
+                                             className={`notification-list-item ${status} ${item.is_read ? "read" : ""}`}
+                                             key={id}
+                                        >
+                                             <div className="notification-list-left">
+                                                  <div className="notification-list-icon">
+                                                       <i
+                                                            className={
+                                                                 item.type === "alert"
+                                                                      ? "fa-solid fa-file-invoice-dollar"
+                                                                      : "fa-solid fa-calendar-check"
+                                                            }
+                                                       ></i>
+                                                  </div>
+
+                                                  <div>
+                                                       <h4>{item.title}</h4>
+
+                                                       <p>
+                                                            <span className={`type-pill ${item.type}`}>
+                                                                 {item.type === "alert" ? "Bill Alert" : "Reminder"}
+                                                            </span>
+
+                                                            {" "}
+                                                            •{" "}
+
+                                                            <span>{item.category || "Other"}</span>
+
+                                                            {itemAmount && (
+                                                                 <>
+                                                                      {" "}
+                                                                      •{" "}
+                                                                      <strong>
+                                                                           ₹ {Number(itemAmount).toLocaleString("en-IN")}
+                                                                      </strong>
+                                                                 </>
+                                                            )}
+                                                       </p>
+
+                                                       {item.note && <small>{item.note}</small>}
+                                                  </div>
                                              </div>
 
-                                             <div>
-                                                  <h4>{item.title}</h4>
+                                             <div className="notification-list-right">
+                                                  <span className={`status-badge ${status}`}>
+                                                       {getDateLabel(itemDate)}
+                                                  </span>
 
                                                   <p>
-                                                       <span>{item.category}</span>
-                                                       {item.amount && (
-                                                            <>
-                                                                 {" "}
-                                                                 •{" "}
-                                                                 <strong>
-                                                                      ₹ {Number(item.amount).toLocaleString("en-IN")}
-                                                                 </strong>
-                                                            </>
-                                                       )}
+                                                       {new Date(itemDate).toLocaleDateString("en-IN")}
+                                                       {itemTime ? ` • ${itemTime}` : ""}
                                                   </p>
 
-                                                  {item.note && <small>{item.note}</small>}
+                                                  <div
+                                                       style={{
+                                                            display: "flex",
+                                                            gap: "8px",
+                                                            justifyContent: "flex-end"
+                                                       }}
+                                                  >
+                                                       {!item.is_read && (
+                                                            <button
+                                                                 type="button"
+                                                                 title="Mark as read"
+                                                                 disabled={actionLoadingId === id}
+                                                                 onClick={() => handleRead(id)}
+                                                            >
+                                                                 {actionLoadingId === id ? (
+                                                                      <span className="mini-spinner"></span>
+                                                                 ) : (
+                                                                      <i className="fa-solid fa-check"></i>
+                                                                 )}
+                                                            </button>
+                                                       )}
+
+                                                       <button
+                                                            type="button"
+                                                            title="Delete"
+                                                            disabled={actionLoadingId === id}
+                                                            onClick={() => handleDelete(id)}
+                                                       >
+                                                            {actionLoadingId === id ? (
+                                                                 <span className="mini-spinner"></span>
+                                                            ) : (
+                                                                 <i className="fa-solid fa-trash"></i>
+                                                            )}
+                                                       </button>
+                                                  </div>
                                              </div>
                                         </div>
-
-                                        <div className="notification-list-right">
-                                             <span className={`status-badge ${item.status}`}>
-                                                  {getDateLabel(item.date)}
-                                             </span>
-
-                                             <p>
-                                                  {new Date(item.date).toLocaleDateString("en-IN")}
-                                                  {item.time ? ` • ${item.time}` : ""}
-                                             </p>
-
-                                             <button onClick={() => handleDelete(item.id)}>
-                                                  <i className="fa-solid fa-trash"></i>
-                                             </button>
-                                        </div>
-                                   </div>
-                              ))
+                                   );
+                              })
                          ) : (
                               <div className="empty-notification">
                                    <i className="fa-solid fa-bell-slash"></i>
-                                   <h3>No {activeTab === "alert" ? "alerts" : "reminders"} found</h3>
-                                   <p>Create your first {activeTab === "alert" ? "bill alert" : "reminder"} using the form.</p>
+                                   <h3>No reminders or alerts found</h3>
+                                   <p>Create your first reminder or bill alert using the form.</p>
                               </div>
                          )}
                     </div>

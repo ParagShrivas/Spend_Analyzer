@@ -175,6 +175,178 @@
      z-index: 20;
 }
 
+.notification-wrapper {
+     position: relative;
+}
+
+.notification-header-icon {
+     position: relative;
+     overflow: visible;
+}
+
+.notification-count {
+     position: absolute;
+     top: -7px;
+     right: -7px;
+     min-width: 20px;
+     height: 20px;
+     padding: 0 6px;
+     border-radius: 50px;
+     background: #ef4444;
+     color: #ffffff;
+     font-size: 11px;
+     font-weight: 800;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     border: 2px solid #ffffff;
+     z-index: 20;
+}
+
+.notification-dropdown {
+     position: absolute;
+     top: 68px;
+     right: 0;
+     width: 360px;
+     background: #ffffff;
+     border-radius: 22px;
+     box-shadow: 0 18px 45px rgba(14, 165, 233, 0.18);
+     padding: 18px;
+     z-index: 999;
+     animation: notificationPop 0.2s ease;
+}
+
+.notification-dropdown::before {
+     content: "";
+     position: absolute;
+     top: -8px;
+     right: 20px;
+     width: 18px;
+     height: 18px;
+     background: #ffffff;
+     transform: rotate(45deg);
+}
+
+.notification-dropdown-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     margin-bottom: 15px;
+}
+
+.notification-dropdown-header h4 {
+     margin: 0;
+     font-size: 17px;
+     font-weight: 800;
+     color: var(--text);
+}
+
+.notification-dropdown-header span {
+     min-width: 28px;
+     height: 28px;
+     border-radius: 50%;
+     background: rgba(14, 165, 233, 0.12);
+     color: var(--primary-sky);
+     font-size: 13px;
+     font-weight: 800;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+}
+
+.notification-dropdown-list {
+     display: flex;
+     flex-direction: column;
+     gap: 12px;
+     max-height: 310px;
+     overflow-y: auto;
+}
+
+.notification-dropdown-item {
+     display: flex;
+     gap: 12px;
+     padding: 13px;
+     border-radius: 16px;
+     background: #f8fbff;
+     border: 1px solid rgba(14, 165, 233, 0.1);
+}
+
+.notification-dropdown-icon {
+     width: 42px;
+     height: 42px;
+     border-radius: 14px;
+     background: linear-gradient(135deg, var(--secondary-sky), var(--primary-sky));
+     color: #ffffff;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     flex-shrink: 0;
+}
+
+.notification-dropdown-item h5 {
+     margin: 0 0 4px;
+     font-size: 14px;
+     font-weight: 800;
+     color: var(--text);
+}
+
+.notification-dropdown-item p {
+     margin: 0 0 5px;
+     font-size: 12px;
+     color: var(--gray);
+     line-height: 1.4;
+}
+
+.notification-dropdown-item small {
+     font-size: 11px;
+     font-weight: 700;
+     color: var(--primary-sky);
+}
+
+.view-all-notification-btn {
+     width: 100%;
+     margin-top: 15px;
+     border: none;
+     outline: none;
+     padding: 12px;
+     border-radius: 14px;
+     background: linear-gradient(135deg, var(--secondary-sky), var(--primary-sky));
+     color: #ffffff;
+     font-weight: 800;
+     cursor: pointer;
+}
+
+.notification-empty {
+     text-align: center;
+     padding: 25px 10px;
+     color: var(--gray);
+}
+
+.notification-empty i {
+     font-size: 30px;
+     margin-bottom: 8px;
+     color: var(--primary-sky);
+}
+
+@keyframes notificationPop {
+     from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.96);
+     }
+
+     to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+     }
+}
+
+@media (max-width: 480px) {
+     .notification-dropdown {
+          width: 300px;
+          right: -10px;
+     }
+}
+
 /* Top Grid */
 
 .top-grid {

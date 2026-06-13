@@ -4,6 +4,7 @@ import React from "react";
 import "../css/dashboard.css";
 import Toast from "../components/toast";
 import { useExpenses } from '../context/ExpenseContext';
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Pie, Bar } from "react-chartjs-2";
 
@@ -29,11 +30,14 @@ ChartJS.register(
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
+     // navigate 
+     const navigate = useNavigate();
      // expense
      const { expenses, setExpenses, fetchExpenses, expenseLoading } = useExpenses();
 
      // notifications
      const [notifications, setNotifications] = useState([]);
+     const [showNotifications, setShowNotifications] = useState(false);
 
      // budget
      const [budget, setBudget] = useState(0)
@@ -515,13 +519,54 @@ const Dashboard = () => {
 
                     <div className="header-right">
 
-                         <div className="header-icon notification-header-icon">
-                              <i className="fa-regular fa-bell"></i>
+                         <div className="notification-wrapper">
+                              <div
+                                   className="header-icon notification-header-icon"
+                                   onClick={() => setShowNotifications(!showNotifications)}
+                              >
+                                   <i className="fa-regular fa-bell"></i>
 
-                              {notifications.length >= 0 && (
-                                   <span className="notification-count">
-                                        {notifications.length}
-                                   </span>
+                                   {notifications.length >= 0 && (
+                                        <span className="notification-count">
+                                             {notifications.length}
+                                        </span>
+                                   )}
+                              </div>
+
+                              {showNotifications && (
+                                   <div className="notification-dropdown">
+                                        <div className="notification-dropdown-header">
+                                             <h4>Recent Notifications</h4>
+                                             <span>{notifications.length}</span>
+                                        </div>
+
+                                        <div className="notification-dropdown-list">
+                                             {notifications.length > 0 ? (
+                                                  notifications.slice(0, 4).map((item) => (
+                                                       <div className="notification-dropdown-item" key={item.id}>
+                                                            <div className="notification-dropdown-icon">
+                                                                 <i className="fa-solid fa-bell"></i>
+                                                            </div>
+
+                                                            <div>
+                                                                 <h5>{item.title}</h5>
+                                                                 <p>{item.note}</p>
+                                                                 <small>{item.notify_time}</small>
+                                                            </div>
+                                                       </div>
+                                                  ))
+                                             ) : (
+                                                  <div className="notification-empty">
+                                                       <i className="fa-regular fa-bell-slash"></i>
+                                                       <p>No notifications found</p>
+                                                  </div>
+                                             )}
+                                        </div>
+
+                                        <button onClick={() => navigate("/reminders")} className="view-all-notification-btn" >
+                                             View All Notifications
+                                        </button>
+                                   </div>
                               )}
                          </div>
 
