@@ -1,64 +1,65 @@
 const db = require("../config/db");
 
-exports.addNotification = async (req, res) => {
-     const userId = req.user.id;
+exports.addNotification = async (req) => {
+     return new Promise((resolve, reject) => {
+          const userId = req.user.id;
 
-     const {
-          type,
-          title,
-          category,
-          amount,
-          notifyDate,
-          notifyTime,
-          note
-     } = req.body || {};
-
-     if (!type || !title || !notifyDate) {
-          return res.status(400).json({
-               message: "Type, title and date are required"
-          });
-     }
-
-     const query = `
-          INSERT INTO notifications (
-               user_id,
+          const {
                type,
                title,
                category,
                amount,
-               notify_date,
-               notify_time,
-               note
-          )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-          RETURNING *
-     `;
-
-     db.query(
-          query,
-          [
-               userId,
-               type,
-               title,
-               category || null,
-               amount || null,
                notifyDate,
-               notifyTime || null,
-               note || null
-          ],
-          (err, result) => {
-               if (err) {
-                    return res.status(500).json({
-                         message: err.message
-                    });
-               }
+               notifyTime,
+               note
+          } = req.body || {};
 
-               return res.status(201).json({
-                    message: `${type === "alert" ? "Alert" : "Reminder"} created successfully`,
-                    notification: result.rows[0]
+          if (!type || !title || !notifyDate) {
+               return reject({
+                    status: 400,
+                    message: "Type, title and date are required"
                });
           }
-     );
+
+          const query = `
+               INSERT INTO notifications (
+                    user_id,
+                    type,
+                    title,
+                    category,
+                    amount,
+                    notify_date,
+                    notify_time,
+                    note
+               )
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+               RETURNING *
+          `;
+
+          db.query(
+               query,
+               [
+                    userId,
+                    type,
+                    title.trim(),
+                    category || "Other",
+                    type === "alert" ? amount || null : null,
+                    notifyDate,
+                    notifyTime || null,
+                    note || null
+               ],
+               (err, result) => {
+                    if (err) {
+                         return reject({
+                              status: 500,
+                              message: err.message
+                         });
+                    }
+
+                    return resolve(result.rows[0]);
+               }
+          );
+     });
 };
 
 exports.getNotifications = async (req, res) => {

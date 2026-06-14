@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../css/reminders.css";
+import "../css/expense.css";
 import Toast from "../components/toast";
 
 export default function Reminders() {
@@ -19,6 +20,10 @@ export default function Reminders() {
      const [submitting, setSubmitting] = useState(false);
      const [refreshing, setRefreshing] = useState(false);
      const [actionLoadingId, setActionLoadingId] = useState(null);
+
+     const [showDeleteModal, setShowDeleteModal] = useState(false);
+     const [deleteItemId, setDeleteItemId] = useState(null);
+     const [deleteItemTitle, setDeleteItemTitle] = useState("");
 
      const [showToast, setShowToast] = useState(false);
      const [toastMessage, setToastMessage] = useState("");
@@ -281,13 +286,27 @@ export default function Reminders() {
           }
      };
 
-     const handleDelete = async (id) => {
-          if (!id || actionLoadingId) return;
+     const openDeleteModal = (id, title) => {
+          setDeleteItemId(id);
+          setDeleteItemTitle(title);
+          setShowDeleteModal(true);
+     };
 
-          setActionLoadingId(id);
+     const closeDeleteModal = () => {
+          if (actionLoadingId) return;
+
+          setShowDeleteModal(false);
+          setDeleteItemId(null);
+          setDeleteItemTitle("");
+     };
+
+     const handleDelete = async () => {
+          if (!deleteItemId || actionLoadingId) return;
+
+          setActionLoadingId(deleteItemId);
 
           try {
-               const response = await fetch(`http://localhost:1500/notification/delete/${id}`, {
+               const response = await fetch(`http://localhost:1500/notification/delete/${deleteItemId}`, {
                     method: "DELETE",
                     headers: {
                          "Content-Type": "application/json"
@@ -299,6 +318,10 @@ export default function Reminders() {
 
                if (response.ok) {
                     showMessage(data.message || "Notification deleted successfully!", "success");
+
+                    setShowDeleteModal(false);
+                    setDeleteItemId(null);
+                    setDeleteItemTitle("");
 
                     await Promise.all([
                          fetchNotifications(false),
@@ -703,13 +726,9 @@ export default function Reminders() {
                                                             type="button"
                                                             title="Delete"
                                                             disabled={actionLoadingId === id}
-                                                            onClick={() => handleDelete(id)}
+                                                            onClick={() => openDeleteModal(id, item.title)}
                                                        >
-                                                            {actionLoadingId === id ? (
-                                                                 <span className="mini-spinner"></span>
-                                                            ) : (
-                                                                 <i className="fa-solid fa-trash"></i>
-                                                            )}
+                                                            <i className="fa-solid fa-trash"></i>
                                                        </button>
                                                   </div>
                                              </div>
@@ -725,6 +744,54 @@ export default function Reminders() {
                          )}
                     </div>
                </div>
+
+               {showDeleteModal && (
+                    <div className="delete-overlay">
+                         <div className="delete-box">
+                              <div className="delete-icon">
+                                   <i className="fa-solid fa-trash"></i>
+                              </div>
+
+                              <h3>Do you want to delete?</h3>
+
+                              <p>
+                                   Are you sure you want to delete{" "}
+                                   <strong>{deleteItemTitle || "this notification"}</strong>?
+                                   This action cannot be undone.
+                              </p>
+
+                              <div className="delete-actions">
+                                   <button
+                                        type="button"
+                                        className="cancel-delete-btn"
+                                        onClick={closeDeleteModal}
+                                        disabled={actionLoadingId === deleteItemId}
+                                   >
+                                        No, Cancel
+                                   </button>
+
+                                   <button
+                                        type="button"
+                                        className="confirm-delete-btn"
+                                        onClick={handleDelete}
+                                        disabled={actionLoadingId === deleteItemId}
+                                   >
+                                        {actionLoadingId === deleteItemId ? (
+                                             <>
+                                                  <span className="btn-spinner"></span>
+                                                  Deleting...
+                                             </>
+                                        ) : (
+                                             <>
+                                                  Yes, Delete
+                                                  <i className="fa-solid fa-trash"></i>
+                                             </>
+                                        )}
+                                   </button>
+                              </div>
+                         </div>
+                    </div>
+               )}
           </div>
      );
 }
