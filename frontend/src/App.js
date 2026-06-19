@@ -12,6 +12,7 @@ import Budget from './pages/budget';
 import Reminders from './pages/reminders';
 import Reports from './pages/reports';
 import ScrollToTop from "./components/ScrollToTop";
+import Settings from './pages/settings';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path='/budget' element={<Budget />} />
             <Route path='/reminders' element={<Reminders />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </ExpenseProvider>
       </Router>
