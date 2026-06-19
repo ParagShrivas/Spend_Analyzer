@@ -16,6 +16,7 @@
     "bullmq": "^5.78.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "csv": "^6.6.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "ioredis": "^5.11.1",

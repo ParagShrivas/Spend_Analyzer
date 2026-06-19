@@ -132,7 +132,7 @@ const markEmailFailed = async (notificationId, errorMessage) => {
           [notificationId, errorMessage]
      );
 
-     console.log(`Email failed for notification ${notificationId}: ${errorMessage}`);
+     // console.log(`Email failed for notification ${notificationId}: ${errorMessage}`);
 };
 
 module.exports = startUpcomingNotificationMailJob;
