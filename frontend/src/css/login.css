@@ -33,6 +33,7 @@
      padding: 35px 28px;
 
      text-align: center;
+     margin-top: 40px;
 
      box-shadow: var(--shadow);
 }
@@ -89,6 +90,7 @@
      height: 55px;
 
      background: var(--input);
+     border: 1px solid #939393;
 
      border-radius: 15px;
 

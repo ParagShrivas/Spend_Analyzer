@@ -15,6 +15,8 @@ const Register = () => {
      const [toastMessage, setToastMessage] = useState("");
      const [toastMessageType, setToastMessageType] = useState("");
      const [loading, setLoading] = useState(false);
+     const [scrolled, setScrolled] = useState(false);
+     const [mobileOpen, setMobileOpen] = useState(false);
 
      const navigate = useNavigate();
 
@@ -71,138 +73,195 @@ const Register = () => {
      };
 
      return (
-          <div className="login-page">
-               <Toast type={toastMessageType} message={toastMessage} show={showToast} setShow={setShowToast} />
-               <div className="login-card">
-
-                    {/* Top Icon */}
-                    <div className="login-icon">
-                         <i className="fa-solid fa-user-plus"></i>
-                    </div>
-
-                    {/* Heading */}
-                    <h2>Create Account</h2>
-
-                    <p>
-                         Create your Spend Analyzer account
-                         and start tracking your expenses
-                         smarter and faster.
-                    </p>
-
-                    {/* Form */}
-                    <form onSubmit={handleRegister}>
-
-                         {/* Name */}
-                         <div className="input-box">
-                              <i className="fa-solid fa-user"></i>
-
-                              <input
-                                   type="text"
-                                   placeholder="Full Name"
-                                   value={name}
-                                   onChange={(e) => setName(e.target.value)}
-                              />
+          <>
+               <div className="login-page">
+                    <Toast type={toastMessageType} message={toastMessage} show={showToast} setShow={setShowToast} />
+                    {/* NAVBAR */}
+                    <nav className={`sa-nav ${scrolled ? "scrolled" : ""}`}>
+                         <div className="sa-logo" onClick={() => navigate('/')}>
+                              <div className="sa-logo-icon">
+                                   <i className="fa-solid fa-wallet"></i>
+                              </div>
+                              Spend Analyzer
                          </div>
 
-                         {/* Email */}
-                         <div className="input-box">
-                              <i className="fa-solid fa-envelope"></i>
+                         <div className="sa-auth-btns">
+                              <button type="button" className="sa-btn-login" onClick={() => navigate('/login')}>
+                                   Log in
+                              </button>
 
-                              <input
-                                   type="email"
-                                   placeholder="Email"
-                                   value={email}
-                                   onChange={(e) => setEmail(e.target.value)}
-                              />
+                              <button type="button" className="sa-btn-signup" onClick={() => navigate('/register')}>
+                                   Sign up
+                              </button>
                          </div>
 
-                         {/* Password */}
-                         <div className="input-box">
-                              <i className="fa-solid fa-lock"></i>
-
-                              <input
-                                   type={
-                                        type === "password"
-                                             ? "password"
-                                             : "text"
-                                   }
-                                   placeholder="Password"
-                                   value={password}
-                                   onChange={(e) => setPassword(e.target.value)}
-                              />
-
+                         <button
+                              type="button"
+                              className="sa-burger"
+                              onClick={() => setMobileOpen(!mobileOpen)}
+                         >
                               <i
-                                   className={`fa-solid ${type === "password"
-                                        ? "fa-eye-slash"
-                                        : "fa-eye"
-                                        } eye`}
-                                   onClick={() =>
-                                        setType(
-                                             type === "password"
-                                                  ? "text"
-                                                  : "password"
-                                        )
+                                   className={
+                                        mobileOpen
+                                             ? "fa-solid fa-xmark"
+                                             : "fa-solid fa-bars"
                                    }
                               ></i>
-                         </div>
-
-                         {/* Confirm Password */}
-                         <div className="input-box">
-                              <i className="fa-solid fa-lock"></i>
-
-                              <input
-                                   type={
-                                        type === "password"
-                                             ? "password"
-                                             : "text"
-                                   }
-                                   placeholder="Confirm Password"
-                                   value={confirmPassword}
-                                   onChange={(e) =>
-                                        setConfirmPassword(e.target.value)
-                                   }
-                              />
-                         </div>
-
-                         {/* Login Redirect */}
-                         <div className="forgot-password">
-                              <span
-                                   onClick={() => {
-                                        navigate("/login");
-                                   }}
-                              >
-                                   Already have an account?
-                              </span>
-                         </div>
-
-                         {/* Button */}
-                         <button className="login-btn">
-
-                              {
-                                   loading ? (
-                                        <>
-                                             Creating Account
-                                             {" "}
-                                             <i className="fa-solid fa-spinner fa-spin"></i>
-                                        </>
-                                   ) : (
-                                        <>
-                                             Create Account
-                                        </>
-                                   )
-                              }
-
                          </button>
+                    </nav>
 
-                    </form>
+                    {mobileOpen && (
+                         <div className="sa-mobile-menu">
 
-                    {/* Divider */}
-                    <div className="divider">
+                              <button
+                                   type="button"
+                                   className="sa-btn-login"
+                                   style={{ width: "100%" }}
+                                   onClick={() => navigate('/login')}
+                              >
+                                   Log in
+                              </button>
+
+                              <button
+                                   type="button"
+                                   className="sa-btn-signup"
+                                   style={{ width: "100%" }}
+                                   onClick={() => navigate('/register')}
+                              >
+                                   Sign up free
+                              </button>
+                         </div>
+                    )}
+                    <div className="login-card">
+
+                         {/* Top Icon */}
+                         <div className="login-icon">
+                              <i className="fa-solid fa-user-plus"></i>
+                         </div>
+
+                         {/* Heading */}
+                         <h2>Create Account</h2>
+
+                         <p>
+                              Create your Spend Analyzer account
+                              and start tracking your expenses
+                              smarter and faster.
+                         </p>
+
+                         {/* Form */}
+                         <form onSubmit={handleRegister}>
+
+                              {/* Name */}
+                              <div className="input-box">
+                                   <i className="fa-solid fa-user"></i>
+
+                                   <input
+                                        type="text"
+                                        placeholder="Full Name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                   />
+                              </div>
+
+                              {/* Email */}
+                              <div className="input-box">
+                                   <i className="fa-solid fa-envelope"></i>
+
+                                   <input
+                                        type="email"
+                                        placeholder="Email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                   />
+                              </div>
+
+                              {/* Password */}
+                              <div className="input-box">
+                                   <i className="fa-solid fa-lock"></i>
+
+                                   <input
+                                        type={
+                                             type === "password"
+                                                  ? "password"
+                                                  : "text"
+                                        }
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                   />
+
+                                   <i
+                                        className={`fa-solid ${type === "password"
+                                             ? "fa-eye-slash"
+                                             : "fa-eye"
+                                             } eye`}
+                                        onClick={() =>
+                                             setType(
+                                                  type === "password"
+                                                       ? "text"
+                                                       : "password"
+                                             )
+                                        }
+                                   ></i>
+                              </div>
+
+                              {/* Confirm Password */}
+                              <div className="input-box">
+                                   <i className="fa-solid fa-lock"></i>
+
+                                   <input
+                                        type={
+                                             type === "password"
+                                                  ? "password"
+                                                  : "text"
+                                        }
+                                        placeholder="Confirm Password"
+                                        value={confirmPassword}
+                                        onChange={(e) =>
+                                             setConfirmPassword(e.target.value)
+                                        }
+                                   />
+                              </div>
+
+                              {/* Login Redirect */}
+                              <div className="forgot-password">
+                                   <span
+                                        onClick={() => {
+                                             navigate("/login");
+                                        }}
+                                   >
+                                        Already have an account?
+                                   </span>
+                              </div>
+
+                              {/* Button */}
+                              <button className="login-btn">
+
+                                   {
+                                        loading ? (
+                                             <>
+                                                  Creating Account
+                                                  {" "}
+                                                  <i className="fa-solid fa-spinner fa-spin"></i>
+                                             </>
+                                        ) : (
+                                             <>
+                                                  Create Account
+                                             </>
+                                        )
+                                   }
+
+                              </button>
+
+                         </form>
+
+                         {/* Divider */}
+                         {/* <div className="divider">
                          <span>Or sign up with</span>
-                    </div>
+                    </div> */}
 
-                    {/* Social Login */}
-                    <div className="social-login">
+                         {/* Social Login */}
+                         {/* <div className="social-login">
 
                          <button type="button">
                               <i className="fa-brands fa-google"></i>
@@ -216,11 +275,59 @@ const Register = () => {
                               <i className="fa-brands fa-apple"></i>
                          </button>
 
+                    </div> */}
+
                     </div>
 
                </div>
+               <footer className="sa-footer">
+                    <div className="sa-footer-grid">
+                         <div>
+                              <div className="sa-footer-logo">
+                                   <i className="fa-solid fa-wallet"></i>
+                                   Spend Analyzer
+                              </div>
 
-          </div>
+                              <p>
+                                   A simple way to log expenses, track budgets,
+                                   and understand where your money goes — backed
+                                   by clear charts and exportable history.
+                              </p>
+                         </div>
+
+                         <div className="sa-footer-col">
+                              <h5>Product</h5>
+                              <a>Features</a>
+                              <a>How it works</a>
+                              <a>Pricing</a>
+                         </div>
+
+                         <div className="sa-footer-col">
+                              <h5>Company</h5>
+                              <a>Home</a>
+                              <a>About</a>
+                              <a>Contact</a>
+                         </div>
+
+                         <div className="sa-footer-col">
+                              <h5>Legal</h5>
+                              <a >
+                                   Privacy policy
+                              </a>
+                              <a >
+                                   Terms of service
+                              </a>
+                         </div>
+                    </div>
+
+                    <div className="sa-footer-bottom">
+                         <span>
+                              © 2026 Spend Analyzer. All rights reserved.
+                         </span>
+                         <span>contact@domain.com</span>
+                    </div>
+               </footer>
+          </>
      );
 };
 

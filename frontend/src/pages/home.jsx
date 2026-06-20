@@ -380,7 +380,7 @@ export default function SpendAnalyzerLanding() {
 
         <div className="sa-hero-content">
           <div className="sa-badge">
-            <i className="fa-solid fa-sparkles"></i>
+            <i className="fa-solid fa-coins"></i>
             Know where every rupee goes
           </div>
 
@@ -397,7 +397,7 @@ export default function SpendAnalyzerLanding() {
           </p>
 
           <div className="sa-hero-btns">
-            <button type="button" className="sa-btn-primary">
+            <button type="button" className="sa-btn-primary" onClick={()=>navigate('/login')}>
               Get started free
               <i className="fa-solid fa-arrow-right"></i>
             </button>
@@ -405,6 +405,10 @@ export default function SpendAnalyzerLanding() {
             <button
               type="button"
               className="sa-btn-secondary"
+              onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("how-it-works");
+            }}
             >
               See how it works
             </button>
@@ -510,7 +514,7 @@ export default function SpendAnalyzerLanding() {
       <section
         className="sa-section"
         id="how-it-works"
-        style={{ paddingTop: 20 }}
+        style={{ paddingTop: 60 }}
       >
         <div className="sa-section-head">
           <span className="sa-eyebrow">Getting started</span>
@@ -721,6 +725,7 @@ export default function SpendAnalyzerLanding() {
             type="button"
             className="sa-btn-primary"
             style={{ margin: "0 auto" }}
+            onClick={()=>navigate('/register')}
           >
             Create free account
             <i className="fa-solid fa-arrow-right"></i>
