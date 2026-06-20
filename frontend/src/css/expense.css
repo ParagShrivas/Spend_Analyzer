@@ -648,6 +648,10 @@
           padding-bottom: 120px;
      }
 
+     .expense-page-header {
+          margin-top: 70px;
+     }
+
      .expense-page-header h1 {
           font-size: 30px;
      }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../css/analytics.css";
-import {useExpenses} from '../context/ExpenseContext';
+import { useExpenses } from '../context/ExpenseContext';
 import Toast from "../components/toast";
 
 import {
@@ -289,10 +289,14 @@ export default function Analytics() {
                {/* Header */}
                <div className="analytics-header">
                     <div>
-                         <h1>Analytics</h1>
-                         <p>Understand your spending patterns and financial behavior.</p>
-                    </div>
+                         <span className="profile-eyebrow">SPENDING INSIGHTS</span>
 
+                         <h1>Analytics</h1>
+
+                         <p>
+                              Understand your spending patterns and financial behavior.
+                         </p>
+                    </div>
                     <button onClick={exportCSV} disabled={downloading}>
                          {downloading ? (
                               <>

@@ -341,6 +341,7 @@ export default function Expense() {
                {/* Page Header */}
                <div className="expense-page-header">
                     <div>
+                         <span className="profile-eyebrow">EXPENSE MANAGEMENT</span>
                          <h1>Expenses</h1>
                          <p>Manage, filter, edit, and organize all your spending records.</p>
                     </div>

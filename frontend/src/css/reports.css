@@ -289,6 +289,10 @@
           grid-template-columns: 1fr;
      }
 
+     .reports-header{
+          margin-top: 70px;
+     }
+
      .reports-stats-grid {
           grid-template-columns: 1fr;
      }

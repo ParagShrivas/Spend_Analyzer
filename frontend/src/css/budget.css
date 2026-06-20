@@ -440,6 +440,7 @@
      }
 }
 
+
 @media (max-width: 992px) {
      .budget-page {
           margin-left: 0;
@@ -461,6 +462,10 @@
      .budget-page {
           padding: 20px;
           padding-bottom: 120px;
+     }
+
+     .budget-header{
+          margin-top: 70px;
      }
 
      .budget-header h1 {

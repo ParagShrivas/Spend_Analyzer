@@ -364,6 +364,7 @@ export default function Reminders() {
 
                <div className="notifications-header">
                     <div>
+                         <span className="profile-eyebrow">SMART NOTIFICATIONS</span>
                          <h1>Reminders & Alerts</h1>
                          <p>Create reminders and bill alerts to stay updated before due dates.</p>
                     </div>

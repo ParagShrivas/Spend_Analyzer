@@ -7,6 +7,19 @@ const Sidebar = () => {
 
      return (
           <>
+               <div className="mobile-topbar">
+                    <div className="mobile-topbar-logo" onClick={()=>navigate('/dashboard')}>
+                         <i className="fa-solid fa-wallet"></i>
+                         <h3>Spend Analyzer</h3>
+                    </div>
+
+                    <div
+                         className="mobile-topbar-profile"
+                         onClick={() => navigate("/profile")}
+                    >
+                         <i className="fa-solid fa-user"></i>
+                    </div>
+               </div>
                <div className="sidebar">
 
                     {/* Logo */}
@@ -42,7 +55,7 @@ const Sidebar = () => {
                               <i className="fa-solid fa-bell"></i>
                               <span>Reminders</span>
                          </div>
-                         
+
                          <div className="menu-item" onClick={() => navigate("/reports")}>
                               <i className="fa-solid fa-file-export"></i>
                               <span>Reports</span>

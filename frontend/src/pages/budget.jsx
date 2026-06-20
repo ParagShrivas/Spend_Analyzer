@@ -186,6 +186,7 @@ export default function Budget() {
                {/* Header */}
                <div className="budget-header">
                     <div>
+                         <span className="profile-eyebrow">BUDGET PLANNING</span>
                          <h1>Budget</h1>
                          <p>Set your monthly budget and track your spending limits.</p>
                     </div>

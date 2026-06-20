@@ -285,6 +285,7 @@
      }
 }
 
+
 @media (max-width: 992px) {
      .analytics-page {
           margin-left: 0;
@@ -306,6 +307,10 @@
      .analytics-page {
           padding: 20px;
           padding-bottom: 120px;
+     }
+
+     .analytics-header{
+          margin-top: 70px;
      }
 
      .analytics-header h1 {

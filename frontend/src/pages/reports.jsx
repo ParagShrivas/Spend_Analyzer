@@ -146,6 +146,7 @@ export default function Reports() {
                {/* Header */}
                <div className="reports-header">
                     <div>
+                         <span className="profile-eyebrow">FINANCIAL REPORTING</span>
                          <h1>Reports</h1>
                          <p>Generate, filter, print, and export your expense reports.</p>
                     </div>

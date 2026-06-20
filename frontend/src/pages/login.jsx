@@ -5,6 +5,7 @@ import "../css/login.css";
 import "../css/home.css"
 import Toast from "../components/toast";
 import { useLogin } from "../context/LoginContext";
+import Navbar from "../components/navbar"
 
 const Login = () => {
      const { user, checkingLogin } = useLogin();
@@ -18,14 +19,19 @@ const Login = () => {
      const [toastMessage, setToastMessage] = useState("");
      const [toastMessageType, setToastMessageType] = useState("");
      const [loading, setLoading] = useState(false);
-     const [scrolled, setScrolled] = useState(false);
-     const [mobileOpen, setMobileOpen] = useState(false);
 
      useEffect(() => {
           if (!checkingLogin && user) {
                navigate("/dashboard", { replace: true });
           }
      }, [user, checkingLogin, navigate]);
+
+     useEffect(() => {
+          window.scrollTo({
+               top: 0,
+               behavior: "smooth"
+          });
+     }, []);
 
      const handleLogin = async (e) => {
           e.preventDefault();
@@ -70,63 +76,8 @@ const Login = () => {
      return (
           <>
                <div className="login-page">
-                    {/* NAVBAR */}
-                    <nav className={`sa-nav ${scrolled ? "scrolled" : ""}`}>
-                         <div className="sa-logo" onClick={() => navigate('/')}>
-                              <div className="sa-logo-icon">
-                                   <i className="fa-solid fa-wallet"></i>
-                              </div>
-                              Spend Analyzer
-                         </div>
-
-                         <div className="sa-auth-btns">
-                              <button type="button" className="sa-btn-login" onClick={() => navigate('/login')}>
-                                   Log in
-                              </button>
-
-                              <button type="button" className="sa-btn-signup" onClick={() => navigate('/register')}>
-                                   Sign up
-                              </button>
-                         </div>
-
-                         <button
-                              type="button"
-                              className="sa-burger"
-                              onClick={() => setMobileOpen(!mobileOpen)}
-                         >
-                              <i
-                                   className={
-                                        mobileOpen
-                                             ? "fa-solid fa-xmark"
-                                             : "fa-solid fa-bars"
-                                   }
-                              ></i>
-                         </button>
-                    </nav>
-
-                    {mobileOpen && (
-                         <div className="sa-mobile-menu">
-
-                              <button
-                                   type="button"
-                                   className="sa-btn-login"
-                                   style={{ width: "100%" }}
-                                   onClick={() => navigate('/login')}
-                              >
-                                   Log in
-                              </button>
-
-                              <button
-                                   type="button"
-                                   className="sa-btn-signup"
-                                   style={{ width: "100%" }}
-                                   onClick={() => navigate('/register')}
-                              >
-                                   Sign up free
-                              </button>
-                         </div>
-                    )}
                     <Toast type={toastMessageType} message={toastMessage} show={showToast} setShow={setShowToast} />
+                    <Navbar />
                     <div className="login-card">
 
                          {/* Top Icon */}

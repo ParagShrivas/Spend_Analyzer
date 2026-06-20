@@ -510,6 +510,7 @@
      }
 }
 
+
 @media (max-width: 992px) {
      .notifications-page {
           margin-left: 0;
@@ -535,6 +536,10 @@
 
      .form-row {
           grid-template-columns: 1fr;
+     }
+
+     .notifications-header{
+          margin-top: 70px;
      }
 
      .notifications-header h1 {

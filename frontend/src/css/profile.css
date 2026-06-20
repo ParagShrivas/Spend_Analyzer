@@ -809,3 +809,245 @@
           width: 100%;
      }
 }
+
+/* =========================
+   TABLET RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+     .profile-page {
+          padding: 26px;
+     }
+
+     .profile-stats-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+     }
+
+     .profile-content-grid {
+          grid-template-columns: 1fr;
+     }
+}
+
+@media (max-width: 950px) {
+     .profile-page {
+          padding: 24px;
+     }
+
+     .profile-hero-card {
+          padding: 24px;
+     }
+
+     .profile-card {
+          padding: 23px;
+     }
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+     .profile-page {
+          margin-left: 0;
+          min-height: 100vh;
+          padding: 88px 18px 120px;
+     }
+
+     .profile-header {
+          align-items: flex-start;
+          gap: 14px;
+          margin-bottom: 20px;
+     }
+
+     .profile-header h2 {
+          font-size: 27px;
+     }
+
+     .profile-header p {
+          max-width: 290px;
+          font-size: 13px;
+          line-height: 1.6;
+     }
+
+     .profile-refresh-btn {
+          /* width: 100%; */
+          position: absolute;
+          right: 0;
+          margin-right: 10px;
+     }
+
+     .profile-hero-card {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 17px;
+          padding: 21px;
+          border-radius: 20px;
+     }
+
+     .profile-avatar {
+          width: 72px;
+          height: 72px;
+          font-size: 28px;
+     }
+
+     .profile-name-row {
+          gap: 8px;
+     }
+
+     .profile-name-row h3 {
+          font-size: 21px;
+     }
+
+     .profile-email,
+     .profile-member {
+          font-size: 12px;
+          word-break: break-word;
+     }
+
+     .profile-hero-actions {
+          width: 100%;
+     }
+
+     .profile-edit-btn {
+          width: 100%;
+     }
+
+     .profile-stats-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 13px;
+          margin-top: 18px;
+     }
+
+     .profile-stat-card {
+          align-items: flex-start;
+          gap: 11px;
+          padding: 15px;
+          border-radius: 15px;
+     }
+
+     .profile-stat-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
+          font-size: 15px;
+     }
+
+     .profile-stat-card h4 {
+          font-size: 17px;
+     }
+
+     .profile-content-grid {
+          gap: 18px;
+          margin-top: 18px;
+     }
+
+     .profile-card {
+          padding: 19px;
+          border-radius: 18px;
+     }
+
+     .profile-card-heading {
+          align-items: flex-start;
+          padding-bottom: 15px;
+     }
+
+     .profile-card-heading h3 {
+          font-size: 17px;
+     }
+
+     .profile-password-item {
+          align-items: flex-start;
+          flex-direction: column;
+     }
+
+     .profile-change-password-btn {
+          width: 100%;
+     }
+
+     .profile-activity-item {
+          gap: 10px;
+     }
+
+     .profile-activity-item > strong {
+          font-size: 11px;
+     }
+
+     .profile-toast {
+          top: 78px;
+          right: 16px;
+          left: 16px;
+          justify-content: center;
+          text-align: center;
+     }
+
+     .profile-password-overlay,
+     .profile-logout-overlay {
+          align-items: flex-end;
+          padding: 12px;
+     }
+
+     .profile-password-box,
+     .profile-logout-box {
+          width: 100%;
+          max-width: 100%;
+          border-radius: 20px;
+     }
+}
+
+@media (max-width: 480px) {
+     .profile-page {
+          padding-right: 13px;
+          padding-left: 13px;
+     }
+
+     .profile-header {
+          flex-direction: column;
+     }
+
+     .profile-header h2 {
+          font-size: 24px;
+     }
+
+     .profile-hero-card {
+          padding: 18px;
+     }
+
+     .profile-stats-grid {
+          grid-template-columns: 1fr;
+     }
+
+     .profile-stat-card {
+          align-items: center;
+     }
+
+     .profile-card {
+          padding: 16px;
+     }
+
+     .profile-info-item strong {
+          font-size: 12px;
+     }
+
+     .profile-activity-text h5 {
+          font-size: 12px;
+     }
+
+     .profile-password-box {
+          padding: 24px 18px;
+     }
+
+     .profile-password-actions,
+     .profile-logout-actions {
+          flex-direction: column-reverse;
+     }
+
+     .profile-password-actions button,
+     .profile-logout-cancel-btn,
+     .profile-logout-confirm-btn {
+          width: 100%;
+     }
+
+     .profile-logout-box {
+          padding: 25px 19px;
+     }
+}

@@ -871,3 +871,241 @@
           flex-direction: column;
      }
 }
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1200px) {
+     .settings-page {
+          padding: 26px;
+     }
+
+     .settings-layout {
+          grid-template-columns: 210px minmax(0, 1fr);
+          gap: 20px;
+     }
+
+     .settings-card {
+          padding: 24px;
+     }
+}
+
+@media (max-width: 950px) {
+     .settings-page {
+          padding: 24px;
+     }
+
+     .settings-layout {
+          grid-template-columns: 1fr;
+          gap: 18px;
+     }
+
+     .settings-sidebar {
+          flex-direction: row;
+          gap: 8px;
+          padding: 9px;
+          overflow-x: auto;
+          white-space: nowrap;
+          -webkit-overflow-scrolling: touch;
+     }
+
+     .settings-sidebar button {
+          width: auto;
+          min-width: max-content;
+          margin: 0;
+          padding: 12px 14px;
+     }
+
+     .settings-sidebar .danger-tab {
+          margin-top: 0;
+     }
+
+     .settings-card {
+          padding: 24px;
+     }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+     .settings-page {
+          margin-left: 0;
+          min-height: 100vh;
+          padding: 88px 18px 120px;
+     }
+
+     .settings-header {
+          align-items: flex-start;
+          gap: 14px;
+          margin-bottom: 20px;
+     }
+
+     .settings-header h2 {
+          font-size: 27px;
+     }
+
+     .settings-header p {
+          max-width: 290px;
+          font-size: 13px;
+          line-height: 1.6;
+     }
+
+     .settings-header-icon {
+          width: 48px;
+          height: 48px;
+          flex-shrink: 0;
+          border-radius: 14px;
+          font-size: 18px;
+     }
+
+     .settings-layout {
+          gap: 16px;
+     }
+
+     .settings-sidebar {
+          border-radius: 15px;
+     }
+
+     .settings-sidebar button {
+          gap: 8px;
+          padding: 11px 13px;
+          font-size: 12px;
+     }
+
+     .settings-card {
+          padding: 20px;
+          border-radius: 18px;
+     }
+
+     .settings-card-header {
+          align-items: flex-start;
+          gap: 12px;
+          padding-bottom: 17px;
+     }
+
+     .settings-card-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 15px;
+          font-size: 18px;
+     }
+
+     .settings-card-header h3 {
+          font-size: 18px;
+     }
+
+     .settings-card-header p {
+          font-size: 12px;
+     }
+
+     .settings-form-grid {
+          grid-template-columns: 1fr;
+          gap: 15px;
+          margin-top: 19px;
+     }
+
+     .settings-toggle-item {
+          align-items: flex-start;
+          gap: 11px;
+          padding: 16px 0;
+     }
+
+     .settings-toggle-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
+          font-size: 15px;
+     }
+
+     .settings-toggle-text h5 {
+          font-size: 13px;
+     }
+
+     .settings-toggle-text p {
+          font-size: 11px;
+     }
+
+     .settings-toggle-item .switch {
+          margin-top: 6px;
+     }
+
+     .privacy-info-box,
+     .security-status-box {
+          gap: 11px;
+          padding: 15px;
+     }
+
+     .privacy-download-box,
+     .security-action-item,
+     .danger-action {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 14px;
+          padding: 16px;
+     }
+
+     .download-data-btn,
+     .security-action-item button,
+     .outline-danger-btn,
+     .danger-delete-btn,
+     .save-setting-btn {
+          width: 100%;
+     }
+
+     .settings-action {
+          display: block;
+          margin-top: 20px;
+          padding-top: 18px;
+     }
+
+     .settings-toast {
+          top: 78px;
+          right: 16px;
+          left: 16px;
+          justify-content: center;
+          text-align: center;
+     }
+
+     .delete-account-overlay {
+          align-items: flex-end;
+          padding: 12px;
+     }
+
+     .delete-account-box {
+          max-width: 100%;
+          padding: 24px 20px;
+          border-radius: 20px;
+     }
+
+     .delete-account-actions {
+          flex-direction: column;
+          gap: 10px;
+     }
+}
+
+@media (max-width: 400px) {
+     .settings-page {
+          padding-right: 13px;
+          padding-left: 13px;
+     }
+
+     .settings-header h2 {
+          font-size: 24px;
+     }
+
+     .settings-header-icon {
+          width: 44px;
+          height: 44px;
+     }
+
+     .settings-card {
+          padding: 16px;
+     }
+
+     .settings-sidebar button span {
+          font-size: 11px;
+     }
+}

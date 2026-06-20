@@ -506,6 +506,7 @@ const Dashboard = () => {
                <div className="top-header">
 
                     <div>
+                         <span className="profile-eyebrow">FINANCIAL OVERVIEW</span>
 
                          <h1>
                               Welcome back 👋

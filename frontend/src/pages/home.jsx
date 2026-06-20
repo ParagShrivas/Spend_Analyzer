@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../css/home.css";
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 function useReveal() {
   const ref = useRef(null);
@@ -83,7 +84,6 @@ function FaqItem({ q, a, isOpen, onClick }) {
   );
 }
 
-
 export default function SpendAnalyzerLanding() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -102,6 +102,23 @@ export default function SpendAnalyzerLanding() {
 
     setMobileOpen(false)
   };
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const sectionId = location.hash.replace("#", "");
+
+    const timer = setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [location.hash]);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
 
@@ -397,7 +414,7 @@ export default function SpendAnalyzerLanding() {
           </p>
 
           <div className="sa-hero-btns">
-            <button type="button" className="sa-btn-primary" onClick={()=>navigate('/login')}>
+            <button type="button" className="sa-btn-primary" onClick={() => navigate('/login')}>
               Get started free
               <i className="fa-solid fa-arrow-right"></i>
             </button>
@@ -406,9 +423,9 @@ export default function SpendAnalyzerLanding() {
               type="button"
               className="sa-btn-secondary"
               onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("how-it-works");
-            }}
+                e.preventDefault();
+                scrollToSection("how-it-works");
+              }}
             >
               See how it works
             </button>
@@ -725,7 +742,7 @@ export default function SpendAnalyzerLanding() {
             type="button"
             className="sa-btn-primary"
             style={{ margin: "0 auto" }}
-            onClick={()=>navigate('/register')}
+            onClick={() => navigate('/register')}
           >
             Create free account
             <i className="fa-solid fa-arrow-right"></i>
