@@ -335,7 +335,12 @@ export default function Settings() {
                     throw new Error(data.message || "Unable to delete account");
                }
 
-               window.location.href = "/";
+               showMessage('Account deleted successfully')
+
+               setTimeout(() => {
+                    window.location.href = "/";
+               }, 2000);
+
           } catch (error) {
                showMessage(error.message, "error");
           } finally {

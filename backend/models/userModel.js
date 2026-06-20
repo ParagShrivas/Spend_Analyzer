@@ -161,6 +161,35 @@ exports.updateProfile = async (req, res) => {
      }
 };
 
+exports.getLoggedInUser = async (req, res) => {
+     try {
+          const result = await db.query(
+               `
+               SELECT user_id, user_name, user_email
+               FROM users
+               WHERE user_id = $1
+               `,
+               [req.user.id]
+          );
+
+          if (result.rows.length === 0) {
+               return res.status(404).json({
+                    message: "User not found"
+               });
+          }
+
+          return res.status(200).json({
+               user: result.rows[0]
+          });
+     } catch (error) {
+          console.error("Get logged-in user error:", error);
+
+          return res.status(500).json({
+               message: "Unable to verify login"
+          });
+     }
+};
+
 exports.logoutUser = (req, res) => {
      res.clearCookie("token", { httpOnly: true, sameSite: "lax", secure: false });
      return res.status(200).json({ message: "Logged out successfully" });

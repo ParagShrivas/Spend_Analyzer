@@ -149,6 +149,12 @@ exports.getExportData = async (userId) => {
      };
 };
 
+exports.getUserPassword = async (userId) =>{
+    const result = await db.query('SELECT user_password from users WHERE user_id = $1',[userId]);
+
+    return result.rows[0];
+}
+
 exports.deleteUserAccount = async (userId) => {
      const result = await db.query(
           `

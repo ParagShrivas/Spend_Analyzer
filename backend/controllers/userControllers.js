@@ -98,6 +98,10 @@ exports.updateProfile = async (req, res) => {
      userModel.updateProfile(req, res);
 }
 
+exports.getLoggedInUser = (req,res)=>{
+     userModel.getLoggedInUser(req,res);
+}
+
 exports.logoutUser = (req, res) => {
      userModel.logoutUser(req, res);
 }
