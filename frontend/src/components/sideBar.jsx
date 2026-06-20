@@ -56,7 +56,7 @@ const Sidebar = () => {
                     </div>
 
                     {/* Profile */}
-                    <div className="profile-box menu-item" onClick={() => navigate("/login")}>
+                    <div className="profile-box menu-item" onClick={() => navigate("/profile")}>
                          <i className="fas fa-user"></i>
                          <span>Profile</span>
                     </div>

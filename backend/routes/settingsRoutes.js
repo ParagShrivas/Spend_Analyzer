@@ -20,12 +20,6 @@ router.put(
      settingsController.updatePrivacy
 );
 
-router.put(
-     "/password",
-     authMiddleware,
-     settingsController.updatePassword
-);
-
 router.get(
      "/export",
      authMiddleware,

@@ -34,7 +34,7 @@ const Login = () => {
 
                if (response.ok) {
                     setShowToast(true);
-                    setToastMessage("Login successful!");
+                    setToastMessage("Login successful! Redirecting...");
                     setToastMessageType("success");
 
                     setTimeout(() => {

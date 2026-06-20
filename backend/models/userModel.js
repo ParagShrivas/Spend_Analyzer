@@ -2,16 +2,21 @@ const db = require('../config/db');
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 
-// exports.getAllUsers = (req, res) => {
-//      const query = 'SELECT * FROM users';
+exports.getProfileById = async (userId) => {
+     const query = `
+          SELECT
+               user_name,
+               user_email,
+               phone,
+               created_at
+          FROM users
+          WHERE user_id = $1
+     `;
 
-//      db.query(query,(err,result)=>{
-//           if(err){
-//                return res.status(500).json({ message: err.message });
-//           }
-//           return res.status(200).json(result.rows);
-//      })
-// }
+     const result = await db.query(query, [userId]);
+
+     return result.rows[0];
+};
 
 exports.createUser = (req, res) => {
      const { name, email, password } = req.body;
@@ -39,7 +44,7 @@ exports.createUser = (req, res) => {
      })
 }
 
-exports.loginUser = async(req, res) => {
+exports.loginUser = async (req, res) => {
      const { email, password } = req.body;
 
      const query = 'SELECT * FROM users WHERE user_email = $1';
@@ -57,7 +62,7 @@ exports.loginUser = async(req, res) => {
                if (!isMatch) {
                     return res.status(401).json({ message: 'Invalid email or password' });
                }
-               
+
                // Generate JWT Token
                const token = jwt.sign(
                     {
@@ -85,4 +90,78 @@ exports.loginUser = async(req, res) => {
                res.status(401).json({ message: 'Invalid email or password' });
           }
      })
+}
+
+exports.getUserPassword = async (userId) => {
+     const result = await db.query(
+          `
+          SELECT user_id, user_password
+          FROM users
+          WHERE user_id = $1
+          `,
+          [userId]
+     );
+
+     return result.rows[0];
+};
+
+exports.updatePassword = async (userId, hashedPassword) => {
+     await db.query(
+          `
+          UPDATE users
+          SET user_password = $1
+          WHERE user_id = $2
+          `,
+          [hashedPassword, userId]
+     );
+};
+
+exports.updateProfile = async (req, res) => {
+     try {
+          const { user_name, user_email, phone } = req.body;
+          const userId = req.user.id;
+
+          const query = `
+               UPDATE users
+               SET
+                    user_name = $1,
+                    user_email = $2,
+                    phone = $3
+               WHERE user_id = $4
+               RETURNING
+                    user_name,
+                    user_email,
+                    phone,
+                    created_at
+          `;
+
+          const result = await db.query(query, [
+               user_name,
+               user_email,
+               phone || null,
+               userId
+          ]);
+
+          if (result.rows.length === 0) {
+               return res.status(404).json({
+                    message: "User not found"
+               });
+          }
+
+          return res.status(200).json({
+               message: "Profile updated successfully",
+               user: result.rows[0]
+          });
+     } catch (error) {
+          console.error("Update profile error:", error);
+
+          return res.status(500).json({
+               message: "Unable to update profile"
+          });
+     }
+};
+
+exports.logoutUser = (req, res) => {
+     res.clearCookie("token", { httpOnly: true, sameSite: "lax", secure: false });
+     return res.status(200).json({ message: "Logged out successfully" });
 }

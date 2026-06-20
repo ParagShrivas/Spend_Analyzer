@@ -51,6 +51,10 @@ const Register = () => {
                     setShowToast(true);
                     setToastMessage("Registration successful! Please login.");
                     setToastMessageType("success");
+
+                    setTimeout(() => {
+                         window.location.href = '/login'
+                    }, 1000);
                }
 
                else if (!response.ok) {

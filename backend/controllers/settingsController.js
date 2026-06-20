@@ -89,67 +89,6 @@ exports.updatePrivacy = async (req, res) => {
      }
 };
 
-exports.updatePassword = async (req, res) => {
-     try {
-          const {
-               currentPassword,
-               newPassword,
-               confirmPassword
-          } = req.body;
-
-          if (!currentPassword || !newPassword || !confirmPassword) {
-               return res.status(400).json({
-                    message: "All password fields are required"
-               });
-          }
-
-          if (newPassword.length < 8) {
-               return res.status(400).json({
-                    message: "New password must contain at least 8 characters"
-               });
-          }
-
-          if (newPassword !== confirmPassword) {
-               return res.status(400).json({
-                    message: "New passwords do not match"
-               });
-          }
-
-          const user = await settingsModel.getUserPassword(req.user.id);
-
-          if (!user) {
-               return res.status(404).json({
-                    message: "User not found"
-               });
-          }
-
-          const isCorrect = await bcrypt.compare(
-               currentPassword,
-               user.user_password
-          );
-
-          if (!isCorrect) {
-               return res.status(401).json({
-                    message: "Current password is incorrect"
-               });
-          }
-
-          const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-          await settingsModel.updatePassword(req.user.id, hashedPassword);
-
-          return res.status(200).json({
-               message: "Password updated successfully"
-          });
-     } catch (error) {
-          console.error("Update password error:", error);
-
-          return res.status(500).json({
-               message: "Unable to update password"
-          });
-     }
-};
-
 exports.exportData = async (req, res) => {
      try {
           const data = await settingsModel.getExportData(req.user.id);

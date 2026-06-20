@@ -83,30 +83,6 @@ exports.updatePrivacy = async (userId, settings) => {
      return result.rows[0];
 };
 
-exports.getUserPassword = async (userId) => {
-     const result = await db.query(
-          `
-          SELECT user_id, user_password
-          FROM users
-          WHERE user_id = $1
-          `,
-          [userId]
-     );
-
-     return result.rows[0];
-};
-
-exports.updatePassword = async (userId, hashedPassword) => {
-     await db.query(
-          `
-          UPDATE users
-          SET user_password = $1
-          WHERE user_id = $2
-          `,
-          [hashedPassword, userId]
-     );
-};
-
 exports.clearNotifications = async (userId) => {
      const result = await db.query(
           `

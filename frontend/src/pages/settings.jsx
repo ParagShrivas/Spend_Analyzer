@@ -223,7 +223,7 @@ export default function Settings() {
           try {
                setPasswordLoading(true);
 
-               const response = await fetch(`${API_URL}/password`, {
+               const response = await fetch(`http://localhost:1500/user/password`, {
                     method: "PUT",
                     headers: {
                          "Content-Type": "application/json"
@@ -887,6 +887,7 @@ export default function Settings() {
                          </div>
                     </div>
                )}
+               
           </div>
      );
 }
