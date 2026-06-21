@@ -478,8 +478,199 @@ const dueMailTemplate = ({
      `;
 };
 
+const forgotPasswordOtpTemplate = ({ name, otp }) => {
+
+     const safeName = escapeHtml(name || "User");
+
+     const safeOtp = escapeHtml(otp);
+
+
+
+     return `
+
+          <div style="margin:0;padding:32px 15px;background:#eef3f9;font-family:Arial,Helvetica,sans-serif;">
+
+               <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:22px;overflow:hidden;box-shadow:0 18px 50px rgba(15,23,42,0.14);">
+
+
+
+                    <div style="padding:34px 28px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;text-align:center;">
+
+                         <div style="width:62px;height:62px;line-height:62px;margin:0 auto 16px;border-radius:18px;background:rgba(255,255,255,0.18);font-size:28px;">
+
+                              🔐
+
+                         </div>
+
+
+
+                         <h1 style="margin:0;font-size:27px;line-height:1.3;font-weight:800;">
+
+                              Reset Your Password
+
+                         </h1>
+
+
+
+                         <p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:rgba(255,255,255,0.9);">
+
+                              Use the verification code below to continue securely.
+
+                         </p>
+
+                    </div>
+
+
+
+                    <div style="padding:32px 28px;text-align:center;">
+
+                         <p style="margin:0 0 12px;color:#0f172a;font-size:16px;line-height:1.6;">
+
+                              Hello <strong>${safeName}</strong>,
+
+                         </p>
+
+
+
+                         <p style="margin:0;color:#64748b;font-size:14px;line-height:1.75;">
+
+                              We received a request to reset your Spend Analyzer password.
+
+                              Enter the following 4-digit verification code in the app.
+
+                         </p>
+
+
+
+                         <div style="margin:26px auto;padding:20px 16px;max-width:255px;border:1px dashed #8b5cf6;border-radius:16px;background:#f5f3ff;">
+
+                              <p style="margin:0 0 8px;color:#7c3aed;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;">
+
+                                   Password Reset Code
+
+                              </p>
+
+
+
+                              <div style="color:#4c1d95;font-size:34px;font-weight:800;letter-spacing:11px;line-height:1;">
+
+                                   ${safeOtp}
+
+                              </div>
+
+                         </div>
+
+
+
+                         <div style="margin-top:22px;padding:15px 16px;border-radius:12px;background:#fff7ed;text-align:left;">
+
+                              <p style="margin:0;color:#9a3412;font-size:13px;font-weight:800;">
+
+                                   Important
+
+                              </p>
+
+
+
+                              <p style="margin:6px 0 0;color:#7c2d12;font-size:13px;line-height:1.65;">
+
+                                   This verification code expires in 10 minutes. Do not share this code with anyone.
+
+                              </p>
+
+                         </div>
+
+
+
+                         <p style="margin:22px 0 0;color:#94a3b8;font-size:12px;line-height:1.7;">
+
+                              If you did not request a password reset, you can safely ignore this email.
+
+                              Your account password will remain unchanged.
+
+                         </p>
+
+                    </div>
+
+
+
+                    <div style="padding:18px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;text-align:center;">
+
+                         <p style="margin:0;color:#94a3b8;font-size:12px;line-height:1.6;">
+
+                              This is an automated security email from <strong>Spend Analyzer</strong>.<br />
+
+                              Please do not reply directly to this email.
+
+                         </p>
+
+                    </div>
+
+               </div>
+
+          </div>
+
+     `;
+
+};
+
+const passwordChangedMailTemplate = ({ name }) => {
+     return `
+          <div style="margin:0;padding:32px 15px;background:#eef3f9;font-family:Arial,Helvetica,sans-serif;">
+               <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:22px;overflow:hidden;box-shadow:0 18px 50px rgba(15,23,42,0.14);">
+
+                    <div style="padding:34px 28px;background:linear-gradient(135deg,#059669,#047857);color:#ffffff;text-align:center;">
+                         <div style="width:62px;height:62px;line-height:62px;margin:0 auto 16px;border-radius:18px;background:rgba(255,255,255,0.18);font-size:28px;">
+                              ✓
+                         </div>
+
+                         <h1 style="margin:0;font-size:27px;line-height:1.3;font-weight:800;">
+                              Password Changed Successfully
+                         </h1>
+
+                         <p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:rgba(255,255,255,0.9);">
+                              Your Spend Analyzer account password has been updated.
+                         </p>
+                    </div>
+
+                    <div style="padding:32px 28px;text-align:center;">
+                         <p style="margin:0 0 12px;color:#0f172a;font-size:16px;line-height:1.6;">
+                              Hello <strong>${name || "User"}</strong>,
+                         </p>
+
+                         <p style="margin:0;color:#64748b;font-size:14px;line-height:1.75;">
+                              Your password was changed successfully. You can now sign in to your Spend Analyzer account using your new password.
+                         </p>
+
+                         <div style="margin-top:24px;padding:16px;border-radius:12px;background:#ecfdf5;border-left:4px solid #10b981;text-align:left;">
+                              <p style="margin:0;color:#065f46;font-size:13px;font-weight:800;">
+                                   Security Notice
+                              </p>
+
+                              <p style="margin:7px 0 0;color:#047857;font-size:13px;line-height:1.65;">
+                                   If you did not change your password, please secure your account immediately and contact support.
+                              </p>
+                         </div>
+
+                         <p style="margin:22px 0 0;color:#94a3b8;font-size:12px;line-height:1.7;">
+                              This is an automated security notification from Spend Analyzer.
+                         </p>
+                    </div>
+
+                    <div style="padding:18px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;text-align:center;">
+                         <p style="margin:0;color:#94a3b8;font-size:12px;">
+                              Spend Analyzer · Account Security
+                         </p>
+                    </div>
+               </div>
+          </div>
+     `;
+};
+
 module.exports = {
      loginOtpMailTemplate,
+     forgotPasswordOtpTemplate,
+     passwordChangedMailTemplate,
      reminderMailTemplate,
      dueMailTemplate
 };

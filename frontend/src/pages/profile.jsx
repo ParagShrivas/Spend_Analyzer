@@ -195,7 +195,7 @@ export default function Profile() {
 
         return [...expenseActivities, ...notificationActivities]
             .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .slice(0, 5);
+            .slice(0, 6);
     }, [expenses, notifications]);
 
     const getProfileInitial = () => {

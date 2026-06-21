@@ -109,3 +109,15 @@ exports.getLoggedInUser = (req,res)=>{
 exports.logoutUser = (req, res) => {
      userModel.logoutUser(req, res);
 }
+
+exports.forgotPassword = (req,res) =>{
+     userModel.forgotPassword(req,res);
+}
+
+exports.verifyForgotPasswordOtp = (req,res) =>{
+     userModel.verifyForgotPasswordOtp(req,res);
+}
+
+exports.resetPassword = (req,res) =>{
+     userModel.resetPassword(req,res);
+}

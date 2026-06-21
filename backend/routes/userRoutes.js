@@ -11,5 +11,8 @@ router.put('/profile',authMiddleware ,userControllers.updateProfile);
 router.put('/password',authMiddleware,userControllers.updatePassword);
 router.get('/me',authMiddleware,userControllers.getLoggedInUser)
 router.post('/logout',authMiddleware,userControllers.logoutUser)
+router.post('/forgot-password', userControllers.forgotPassword);
+router.post('/verify-forgot-password-otp',userControllers.verifyForgotPasswordOtp);
+router.post('/reset-password', userControllers.resetPassword);
 
 module.exports = router; 
