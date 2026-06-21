@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 router.post('/register', userControllers.registerUser);
 router.post('/login', userControllers.loginUser);
+router.post('/verify-login-otp',userControllers.verifyLoginOtp)
 router.get('/profile',authMiddleware ,userControllers.getProfileById);
 router.put('/profile',authMiddleware ,userControllers.updateProfile);
 router.put('/password',authMiddleware,userControllers.updatePassword);

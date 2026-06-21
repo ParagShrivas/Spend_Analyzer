@@ -9,6 +9,10 @@ exports.loginUser = (req, res) => {
      userModel.loginUser(req, res);
 }
 
+exports.verifyLoginOtp = (req,res)=>{
+     userModel.verifyLoginOtp(req,res)
+}
+
 exports.getProfileById = async (req, res) => {
      try {
           const userId = req.user.id;
