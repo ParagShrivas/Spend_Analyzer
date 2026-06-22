@@ -52,6 +52,11 @@ export default function Navbar() {
 
                     <div className="sa-links">
                          <a
+                              href="/about"
+                         >
+                              About
+                         </a>
+                         <a
                               href="#features"
                               onClick={(e) => {
                                    e.preventDefault();

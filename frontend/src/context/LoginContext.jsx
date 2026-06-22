@@ -28,7 +28,7 @@ export function LoginProvider({ children }) {
                     setUser(null);
 
                     if (
-                         !["/", "/login", "/register"].includes(
+                         !["/", "/login", "/register","/about","/contact"].includes(
                               location.pathname
                          )
                     ) {

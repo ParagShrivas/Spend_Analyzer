@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "../css/home.css";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
+import Footer from "../components/footer";
+import Navbar from "../components/navbar";
 
 function useReveal() {
   const ref = useRef(null);
@@ -88,7 +90,6 @@ export default function SpendAnalyzerLanding() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const [modal, setModal] = useState(null);
   const [progressVisible, setProgressVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -254,142 +255,7 @@ export default function SpendAnalyzerLanding() {
   return (
     <div className="sa-root">
       {/* NAVBAR */}
-      <nav className={`sa-nav ${scrolled ? "scrolled" : ""}`}>
-        <div className="sa-logo" onClick={() => navigate('/')}>
-          <div className="sa-logo-icon">
-            <i className="fa-solid fa-wallet"></i>
-          </div>
-          Spend Analyzer
-        </div>
-
-        <div className="sa-links">
-          <a
-            href="#features"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("features");
-            }}
-          >
-            Features
-          </a>
-
-          <a
-            href="#how-it-works"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("how-it-works");
-            }}
-          >
-            How it works
-          </a>
-
-          <a
-            href="#analysis"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("analysis");
-            }}
-          >
-            Analysis
-          </a>
-
-          <a
-            href="#faq"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("faq");
-            }}
-          >
-            FAQ
-          </a>
-        </div>
-
-        <div className="sa-auth-btns">
-          <button type="button" className="sa-btn-login" onClick={() => navigate('/login')}>
-            Log in
-          </button>
-
-          <button type="button" className="sa-btn-signup" onClick={() => navigate('/register')}>
-            Sign up
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className="sa-burger"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          <i
-            className={
-              mobileOpen
-                ? "fa-solid fa-xmark"
-                : "fa-solid fa-bars"
-            }
-          ></i>
-        </button>
-      </nav>
-
-      {mobileOpen && (
-        <div className="sa-mobile-menu">
-          <a
-            href="#features"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("features");
-            }}
-          >
-            Features
-          </a>
-
-          <a
-            href="#how-it-works"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("how-it-works");
-            }}
-          >
-            How it works
-          </a>
-
-          <a
-            href="#analysis"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("analysis");
-            }}
-          >
-            Analysis
-          </a>
-
-          <a
-            href="#faq"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("faq");
-            }}
-          >
-            FAQ
-          </a>
-
-          <button
-            type="button"
-            className="sa-btn-login"
-            style={{ width: "100%" }}
-            onClick={() => navigate('/login')}
-          >
-            Log in
-          </button>
-
-          <button
-            type="button"
-            className="sa-btn-signup"
-            style={{ width: "100%" }}
-            onClick={() => navigate('/register')}
-          >
-            Sign up free
-          </button>
-        </div>
-      )}
+      <Navbar />
 
       {/* HERO */}
       <section className="sa-hero">
@@ -751,121 +617,7 @@ export default function SpendAnalyzerLanding() {
       </section>
 
       {/* FOOTER */}
-      <footer className="sa-footer">
-        <div className="sa-footer-grid">
-          <div>
-            <div className="sa-footer-logo">
-              <i className="fa-solid fa-wallet"></i>
-              Spend Analyzer
-            </div>
-
-            <p>
-              A simple way to log expenses, track budgets,
-              and understand where your money goes — backed
-              by clear charts and exportable history.
-            </p>
-          </div>
-
-          <div className="sa-footer-col">
-            <h5>Product</h5>
-            <a>Features</a>
-            <a>How it works</a>
-            <a>Pricing</a>
-          </div>
-
-          <div className="sa-footer-col">
-            <h5>Company</h5>
-            <a>Home</a>
-            <a>About</a>
-            <a>Contact</a>
-          </div>
-
-          <div className="sa-footer-col">
-            <h5>Legal</h5>
-            <a onClick={() => setModal("privacy")}>
-              Privacy policy
-            </a>
-            <a onClick={() => setModal("terms")}>
-              Terms of service
-            </a>
-          </div>
-        </div>
-
-        <div className="sa-footer-bottom">
-          <span>
-            © 2026 Spend Analyzer. All rights reserved.
-          </span>
-          <span>contact@domain.com</span>
-        </div>
-      </footer>
-
-      {/* MODALS */}
-      {modal && (
-        <div
-          className="sa-modal-overlay"
-          onClick={() => setModal(null)}
-        >
-          <div
-            className="sa-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="sa-modal-close"
-              onClick={() => setModal(null)}
-            >
-              <i className="fa-solid fa-xmark"></i>
-            </button>
-
-            {modal === "privacy" ? (
-              <>
-                <h3>Privacy policy</h3>
-                <p>
-                  Spend Analyzer collects only the
-                  information needed to provide expense
-                  tracking, budgeting, and reminder
-                  features, such as the expenses you
-                  log and your account details.
-                </p>
-                <p>
-                  Your financial data is never sold to
-                  third parties. CSV exports are
-                  generated on demand and only
-                  accessible to you.
-                </p>
-                <p>
-                  You may request deletion of your
-                  account and all associated data at
-                  any time from your account settings.
-                </p>
-              </>
-            ) : (
-              <>
-                <h3>Terms of service</h3>
-                <p>
-                  By using Spend Analyzer, you agree
-                  to use the service for personal
-                  expense tracking in accordance with
-                  applicable law.
-                </p>
-                <p>
-                  You are responsible for the accuracy
-                  of expenses you log. Spend Analyzer
-                  is a tracking tool and does not
-                  provide financial, tax, or investment
-                  advice.
-                </p>
-                <p>
-                  We may update these terms from time
-                  to time. Continued use of the service
-                  after updates constitutes acceptance
-                  of the revised terms.
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <Footer/>
     </div>
   );
 }

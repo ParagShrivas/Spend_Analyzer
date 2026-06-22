@@ -5,6 +5,7 @@ import "../css/home.css";
 import Toast from "../components/toast";
 import { useLogin } from "../context/LoginContext";
 import Navbar from "../components/navbar";
+import Footer from "../components/footer";
 
 const API_URL = "http://localhost:1500/user";
 
@@ -506,47 +507,7 @@ const Login = () => {
                     </div>
                </div>
 
-               <footer className="sa-footer">
-                    <div className="sa-footer-grid">
-                         <div>
-                              <div className="sa-footer-logo">
-                                   <i className="fa-solid fa-wallet"></i>
-                                   Spend Analyzer
-                              </div>
-
-                              <p>
-                                   A simple way to log expenses, track budgets,
-                                   and understand where your money goes — backed
-                                   by clear charts and exportable history.
-                              </p>
-                         </div>
-
-                         <div className="sa-footer-col">
-                              <h5>Product</h5>
-                              <a>Features</a>
-                              <a>How it works</a>
-                              <a>Pricing</a>
-                         </div>
-
-                         <div className="sa-footer-col">
-                              <h5>Company</h5>
-                              <a>Home</a>
-                              <a>About</a>
-                              <a>Contact</a>
-                         </div>
-
-                         <div className="sa-footer-col">
-                              <h5>Legal</h5>
-                              <a>Privacy policy</a>
-                              <a>Terms of service</a>
-                         </div>
-                    </div>
-
-                    <div className="sa-footer-bottom">
-                         <span>© 2026 Spend Analyzer. All rights reserved.</span>
-                         <span>contact@domain.com</span>
-                    </div>
-               </footer>
+               <Footer/>
 
                {/* Existing Login OTP Popup */}
                {showOtpBox && (

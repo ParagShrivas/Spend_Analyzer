@@ -4,6 +4,7 @@ const expenseRoutes = require('./routes/expenseRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const settingsRoutes = require('./routes/settingsRoutes')
+const contactRoutes = require('./routes/contactRoutes')
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -23,5 +24,6 @@ app.use('/expense', expenseRoutes);
 app.use('/budget', budgetRoutes);
 app.use('/notification', notificationRoutes);
 app.use("/settings", settingsRoutes);
+app.use("/contact", contactRoutes)
 
 module.exports = app;

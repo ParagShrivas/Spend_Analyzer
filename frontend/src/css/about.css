@@ -1,0 +1,387 @@
+/* ================================
+   ABOUT PAGE
+================================ */
+/* ABOUT BREADCRUMB */
+
+.sa-breadcrumb-wrap {
+     padding: 108px 6vw 0;
+     background: var(--body-bg);
+}
+
+.sa-breadcrumb {
+     width: fit-content;
+     display: inline-flex;
+     align-items: center;
+     gap: 10px;
+     padding: 10px 15px;
+     border: 1px solid rgba(14, 165, 233, 0.12);
+     border-radius: var(--radius-medium);
+     background: rgba(255, 255, 255, 0.78);
+     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+     backdrop-filter: blur(10px);
+}
+
+.sa-breadcrumb-home {
+     display: inline-flex;
+     align-items: center;
+     gap: 7px;
+     padding: 0;
+     border: none;
+     background: transparent;
+     color: var(--primary-sky);
+     font-size: 0.86rem;
+     font-weight: 700;
+     cursor: pointer;
+     transition: var(--transition);
+}
+
+.sa-breadcrumb-home:hover {
+     color: var(--dark-blue);
+}
+
+.sa-breadcrumb-arrow {
+     color: #94a3b8;
+     font-size: 0.68rem;
+}
+
+.sa-breadcrumb-current {
+     color: var(--gray);
+     font-size: 0.86rem;
+     font-weight: 600;
+}
+
+@media (max-width: 968px) {
+     .sa-breadcrumb-wrap {
+          padding-top: 96px;
+     }
+
+     .sa-about-hero {
+          padding-top: 34px;
+     }
+}
+
+.sa-about-hero {
+    /* min-height: 100vh; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+    padding: 120px 6vw 70px;
+    position: relative;
+    overflow: hidden;
+    margin-top: -50px;
+}
+
+.sa-about-hero-content {
+    flex: 1;
+    max-width: 620px;
+}
+
+.sa-about-hero h1 {
+    font-size: 3.3rem;
+    line-height: 1.1;
+    font-weight: 800;
+    margin: 0 0 22px;
+    color: var(--text);
+}
+
+.sa-about-hero h1 span {
+    background: linear-gradient(135deg, var(--primary-sky), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sa-about-hero p {
+    color: var(--gray);
+    font-size: 1.08rem;
+    line-height: 1.75;
+    margin-bottom: 32px;
+}
+
+.sa-about-visual {
+    flex: 1;
+    max-width: 470px;
+    position: relative;
+}
+
+.sa-about-card {
+    background: var(--white);
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow);
+    padding: 30px;
+    position: relative;
+    z-index: 2;
+    animation: floatCard 5s ease-in-out infinite;
+}
+
+.sa-about-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.sa-about-card-top span {
+    display: block;
+    color: var(--gray);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.sa-about-card-top h3 {
+    margin: 0;
+    color: var(--dark-blue);
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.sa-about-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--primary-sky), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 1.4rem;
+    box-shadow: var(--shadow);
+}
+
+.sa-about-meter {
+    width: 100%;
+    height: 14px;
+    border-radius: 30px;
+    background: var(--input);
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.sa-about-meter div {
+    height: 100%;
+    border-radius: 30px;
+    background: linear-gradient(90deg, var(--green), var(--secondary-sky));
+    animation: aboutMeter 1.3s ease forwards;
+}
+
+@keyframes aboutMeter {
+    from {
+        width: 0;
+    }
+}
+
+.sa-about-mini-list {
+    display: grid;
+    gap: 12px;
+}
+
+.sa-about-mini-list div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--input);
+    padding: 13px 15px;
+    border-radius: var(--radius-small);
+}
+
+.sa-about-mini-list span {
+    color: var(--gray);
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.sa-about-mini-list strong {
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.sa-about-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.sa-about-info-card {
+    background: var(--white);
+    border-radius: var(--radius-medium);
+    padding: 34px 28px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.sa-about-info-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sa-about-info-card:hover {
+    transform: translateY(-8px);
+}
+
+.sa-about-info-card h3 {
+    margin: 0 0 12px;
+    color: var(--text);
+    font-size: 1.18rem;
+}
+
+.sa-about-info-card p {
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.93rem;
+    line-height: 1.7;
+}
+
+.bg-sky {
+    background: linear-gradient(135deg, var(--primary-sky), var(--dark-blue));
+}
+
+.bg-purple {
+    background: linear-gradient(135deg, var(--purple), #6d28d9);
+}
+
+.bg-green {
+    background: linear-gradient(135deg, var(--green), #059669);
+}
+
+.sa-about-dark {
+    background: linear-gradient(135deg, var(--dark-blue), var(--primary-sky));
+    color: var(--white);
+}
+
+.sa-about-dark .sa-section-head h2 {
+    color: var(--white);
+}
+
+.sa-about-dark .sa-section-head p {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.sa-about-dark .sa-eyebrow {
+    color: #bae6fd;
+}
+
+.sa-about-benefits {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+.sa-about-benefit {
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: var(--radius-medium);
+    padding: 28px 22px;
+    backdrop-filter: blur(6px);
+    transition: var(--transition);
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.sa-about-benefit.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sa-about-benefit:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.sa-about-benefit i {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-small);
+    background: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 1.25rem;
+    margin-bottom: 18px;
+}
+
+.sa-about-benefit h4 {
+    margin: 0 0 10px;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.sa-about-benefit p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.86rem;
+    line-height: 1.65;
+}
+
+.sa-about-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.sa-about-stat {
+    background: var(--white);
+    border-radius: var(--radius-medium);
+    padding: 34px 22px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: var(--transition);
+}
+
+.sa-about-stat.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sa-about-stat strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--dark-blue);
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.sa-about-stat span {
+    color: var(--gray);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.sa-about-reveal {
+    transition: all 0.65s ease;
+}
+
+@media (max-width: 968px) {
+    .sa-about-hero {
+        flex-direction: column;
+        padding-top: 105px;
+    }
+
+    .sa-about-hero h1 {
+        font-size: 2.35rem;
+    }
+
+    .sa-about-hero-content,
+    .sa-about-visual {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .sa-about-info-grid,
+    .sa-about-benefits,
+    .sa-about-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .sa-about-benefit,
+    .sa-about-stat,
+    .sa-about-info-card {
+        transform: translateY(20px);
+    }
+}
