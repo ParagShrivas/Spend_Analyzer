@@ -26,6 +26,8 @@ import Settings from "./pages/settings";
 import Profile from "./pages/profile";
 import About from "./pages/about";
 import Contact from "./pages/contact";
+import Privacy from "./pages/privacy";
+import Terms from "./pages/terms";
 
 function ProtectedLayout() {
      const { user, checkingLogin } = useLogin();
@@ -66,7 +68,9 @@ function App() {
                          <Route path="/register" element={<Register />} />
                          <Route path="/about" element={<About />} />
                          <Route path="/contact" element={<Contact />} />
-
+                         <Route path="/privacy" element={<Privacy/>}/>
+                         <Route path="/terms" element={<Terms/>}/>
+ 
                          {/* Protected pages */}
                          <Route element={<ProtectedLayout />}>
                               <Route path="/dashboard" element={<Dashboard />} />
