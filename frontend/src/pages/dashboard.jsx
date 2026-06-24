@@ -257,8 +257,43 @@ const Dashboard = () => {
           "Groceries": "#84cc16",
           "Salary": "#14b8a6",
           "Investment": "#6366f1",
-          "Other": "#64748b"
+          "Other": "#048fab"
      };
+
+     // monthly expense 
+     const currentMonth = new Date().getMonth();
+     const currentYear = new Date().getFullYear();
+
+     // Get only current month expenses
+     const currentMonthExpenses = expenses.filter((expense) => {
+          const expenseDate = new Date(expense.expense_date || expense.created_at);
+
+          return (
+               expenseDate.getMonth() === currentMonth &&
+               expenseDate.getFullYear() === currentYear
+          );
+     });
+
+     // Current month total expense
+     const monthlyTotalExpense = currentMonthExpenses.reduce(
+          (total, expense) => total + Number(expense.amount || 0),
+          0
+     );
+
+     // Category wise total for current month
+     const currentMonthCategoryTotals = currentMonthExpenses.reduce((acc, expense) => {
+          const category = expense.category || "Other";
+          const amount = Number(expense.amount || 0);
+
+          acc[category] = (acc[category] || 0) + amount;
+
+          return acc;
+     }, {});
+
+     // Highest spending category this month
+     const highestCategory = Object.entries(currentMonthCategoryTotals).sort(
+          (a, b) => b[1] - a[1]
+     )[0] || ["No Data", 0];
 
      const categoryTotals = expenses.reduce((acc, expense) => {
           const category = expense.category || "Other";
@@ -275,12 +310,15 @@ const Dashboard = () => {
      );
 
      const pieChartData = {
-          labels: Object.keys(categoryTotals),
+          labels: Object.keys(currentMonthCategoryTotals),
           datasets: [
                {
-                    data: Object.values(categoryTotals).map((amount) => Number(amount)),
-                    backgroundColor: Object.keys(categoryTotals).map(
-                         (category) => categoryColors[category] || categoryColors.Other
+                    data: Object.values(currentMonthCategoryTotals).map((amount) =>
+                         Number(amount)
+                    ),
+                    backgroundColor: Object.keys(currentMonthCategoryTotals).map(
+                         (category) =>
+                              categoryColors[category] || categoryColors.Other
                     ),
                     borderWidth: 2,
                     borderColor: "#ffffff"
@@ -461,40 +499,7 @@ const Dashboard = () => {
           }
      };
 
-     // monthly expense 
-     const currentMonth = new Date().getMonth();
-     const currentYear = new Date().getFullYear();
 
-     // Get only current month expenses
-     const currentMonthExpenses = expenses.filter((expense) => {
-          const expenseDate = new Date(expense.expense_date || expense.created_at);
-
-          return (
-               expenseDate.getMonth() === currentMonth &&
-               expenseDate.getFullYear() === currentYear
-          );
-     });
-
-     // Current month total expense
-     const monthlyTotalExpense = currentMonthExpenses.reduce(
-          (total, expense) => total + Number(expense.amount || 0),
-          0
-     );
-
-     // Category wise total for current month
-     const currentMonthCategoryTotals = currentMonthExpenses.reduce((acc, expense) => {
-          const category = expense.category || "Other";
-          const amount = Number(expense.amount || 0);
-
-          acc[category] = (acc[category] || 0) + amount;
-
-          return acc;
-     }, {});
-
-     // Highest spending category this month
-     const highestCategory = Object.entries(currentMonthCategoryTotals).sort(
-          (a, b) => b[1] - a[1]
-     )[0] || ["No Data", 0];
 
      return (
 
@@ -663,7 +668,10 @@ const Dashboard = () => {
                                         <h3>Expense Overview</h3>
 
                                         <button>
-                                             Lifetime
+                                             {new Date().toLocaleString("en-IN", {
+                                                  month: "long",
+                                                  year: "numeric"
+                                             })}
                                         </button>
                                    </div>
 

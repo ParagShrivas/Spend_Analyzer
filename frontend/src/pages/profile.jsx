@@ -172,28 +172,45 @@ export default function Profile() {
 
 
     const recentActivity = useMemo(() => {
-        const expenseActivities = expenses.map((expense) => ({
-            id: `expense-${expense.expense_id}`,
+        const expenseActivities = (expenses || []).map((expense, index) => ({
+            id: `expense-${expense.expense_id || expense.id || index}`,
             type: "expense",
             title: expense.title || "Expense added",
             category: expense.category || "Expense",
-            amount: expense.amount,
-            date: expense.created_at || expense.expense_date
+            amount: Number(expense.amount || 0),
+            date:
+                expense.created_at ||
+                expense.expense_date ||
+                expense.date ||
+                new Date().toISOString()
         }));
 
-        const notificationActivities = notifications.map((notification) => ({
-            id: `notification-${notification.notification_id}`,
-            type: notification.type === "alert" ? "alert" : "reminder",
-            title: notification.title || "Notification created",
-            category:
-                notification.type === "alert"
-                    ? "Bill Alert"
-                    : "Reminder",
-            amount: notification.amount,
-            date: notification.created_at || notification.notify_date
-        }));
+        const notificationMap = new Map();
 
-        return [...expenseActivities, ...notificationActivities]
+        (notifications || []).forEach((notification, index) => {
+            const notificationId =
+                notification.notification_id || notification.id || index;
+
+            const activity = {
+                id: `notification-${notificationId}`,
+                type: notification.type === "alert" ? "alert" : "reminder",
+                title: notification.title || "Notification created",
+                category:
+                    notification.type === "alert"
+                        ? "Bill Alert"
+                        : "Reminder",
+                amount: Number(notification.amount || 0),
+                date:
+                    notification.created_at ||
+                    notification.notify_date ||
+                    notification.date ||
+                    new Date().toISOString()
+            };
+
+            notificationMap.set(activity.id, activity);
+        });
+
+        return [...expenseActivities, ...notificationMap.values()]
             .sort((a, b) => new Date(b.date) - new Date(a.date))
             .slice(0, 6);
     }, [expenses, notifications]);
@@ -384,7 +401,7 @@ export default function Profile() {
                 return;
             }
 
-            showMessage("Logged out Successfully","success")
+            showMessage("Logged out Successfully", "success")
             setTimeout(() => {
                 window.location.href = "/";
             }, 2000);
