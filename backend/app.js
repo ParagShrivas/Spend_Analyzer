@@ -17,7 +17,7 @@ app.use(
           origin: "https://spend-analyzer-five.vercel.app",
           credentials: true,
      })
-);
+)
 
 app.use('/user',userRoutes);
 app.use('/expense', expenseRoutes);
