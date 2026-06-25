@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const LoginContext = createContext();
 
-const API_URL = "http://localhost:1500/user";
+const API_URL = "https://spend-analyzer-five.vercel.app/user";
 
 export function LoginProvider({ children }) {
      const navigate = useNavigate();

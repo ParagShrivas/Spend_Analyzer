@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../css/settings.css";
 
-const API_URL = "http://localhost:1500/settings";
+const API_URL = "https://spend-analyzer-five.vercel.app/settings";
 
 export default function Settings() {
      const [activeTab, setActiveTab] = useState("notifications");
@@ -223,7 +223,7 @@ export default function Settings() {
           try {
                setPasswordLoading(true);
 
-               const response = await fetch(`http://localhost:1500/user/password`, {
+               const response = await fetch(`https://spend-analyzer-five.vercel.app/user/password`, {
                     method: "PUT",
                     headers: {
                          "Content-Type": "application/json"

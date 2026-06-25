@@ -504,6 +504,7 @@
      box-shadow: var(--shadow);
 }
 
+
 /* Card Title */
 
 .card-title {
@@ -928,6 +929,10 @@
      gap: 15px;
 }
 
+.table-card{
+     width: 875px;
+}
+
 .table-actions input,
 .table-actions select {
 
@@ -952,6 +957,10 @@ table {
 thead {
 
      background: #f8fafc;
+}
+
+.th-title{
+     width: 20px;
 }
 
 th,

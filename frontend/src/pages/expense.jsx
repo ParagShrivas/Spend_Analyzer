@@ -224,8 +224,8 @@ export default function Expense() {
           setLoading(true);
 
           const url = isEditing
-               ? `http://localhost:1500/expense/update/${editExpenseId}`
-               : "http://localhost:1500/expense/add";
+               ? `https://spend-analyzer-five.vercel.app/expense/update/${editExpenseId}`
+               : "https://spend-analyzer-five.vercel.app/expense/add";
 
           const method = isEditing ? "PUT" : "POST";
 
@@ -285,7 +285,7 @@ export default function Expense() {
           setShowDeleteOverlay(false);
 
           try {
-               const response = await fetch(`http://localhost:1500/expense/delete/${selectedExpenseId}`, {
+               const response = await fetch(`https://spend-analyzer-five.vercel.app/expense/delete/${selectedExpenseId}`, {
                     method: "DELETE",
                     headers: {
                          "Content-Type": "application/json"

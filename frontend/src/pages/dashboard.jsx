@@ -7,6 +7,7 @@ import { useExpenses } from '../context/ExpenseContext';
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Pie, Bar } from "react-chartjs-2";
+import Footer from "../components/footer";
 
 import {
      Chart as ChartJS,
@@ -111,7 +112,7 @@ const Dashboard = () => {
      // fetch notifications
      const fetchNotifications = async () => {
           try {
-               const response = await fetch("http://localhost:1500/notification/get", {
+               const response = await fetch("https://spend-analyzer-five.vercel.app/notification/get", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"
@@ -137,7 +138,7 @@ const Dashboard = () => {
 
           setLoading(true);
           try {
-               const response = await fetch("http://localhost:1500/expense/add", {
+               const response = await fetch("https://spend-analyzer-five.vercel.app/expense/add", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"
@@ -185,7 +186,7 @@ const Dashboard = () => {
 
           setShowDeleteOverlay(false);
           try {
-               const response = await fetch(`http://localhost:1500/expense/delete/${selectedExpenseId}`, {
+               const response = await fetch(`https://spend-analyzer-five.vercel.app/expense/delete/${selectedExpenseId}`, {
                     method: "DELETE",
                     headers: {
                          "Content-Type": "application/json"
@@ -216,7 +217,7 @@ const Dashboard = () => {
      // fetch budget
      const fetchBudget = async () => {
           try {
-               const response = await fetch("http://localhost:1500/budget/get", {
+               const response = await fetch("https://spend-analyzer-five.vercel.app/budget/get", {
                     method: 'GET',
                     headers: {
                          "Content-Type": "application/json"
@@ -451,7 +452,7 @@ const Dashboard = () => {
           setLoading(true);
 
           try {
-               const response = await fetch(`http://localhost:1500/expense/update/${editExpenseId}`, {
+               const response = await fetch(`https://spend-analyzer-five.vercel.app/expense/update/${editExpenseId}`, {
                     method: "PUT",
                     headers: {
                          "Content-Type": "application/json"
@@ -949,7 +950,7 @@ const Dashboard = () => {
 
                {/* Bottom Grid */}
 
-               <div className="bottom-grid">
+               <div className="bottom-grid mb-4">
 
                     {/* Recent Expenses */}
 
@@ -1289,6 +1290,7 @@ const Dashboard = () => {
                          </div>
                     </div>
                )}
+               <Footer />
 
           </div>
      );

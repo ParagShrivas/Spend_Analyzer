@@ -858,6 +858,14 @@
     color: #64748b;
 }
 
+/* .sa-footer {
+  margin-left: 260px;
+  width: calc(100% - 280px);
+  border-radius: 15px;
+  margin-bottom: 30px;
+  margin-right: 100px;
+} */
+
 /* MODAL */
 .sa-modal-overlay {
     position: fixed;

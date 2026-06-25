@@ -227,7 +227,7 @@ node server.js
 Backend runs on:
 
 
-http://localhost:1500
+https://spend-analyzer-five.vercel.app
 
 
 ### Start Frontend

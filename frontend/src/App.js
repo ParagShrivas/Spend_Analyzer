@@ -28,6 +28,7 @@ import About from "./pages/about";
 import Contact from "./pages/contact";
 import Privacy from "./pages/privacy";
 import Terms from "./pages/terms";
+import Footer from "./components/footer";
 
 function ProtectedLayout() {
      const { user, checkingLogin } = useLogin();
@@ -53,6 +54,7 @@ function ProtectedLayout() {
                <main className="app-main-content">
                     <Outlet />
                </main>
+
           </ExpenseProvider>
      );
 }

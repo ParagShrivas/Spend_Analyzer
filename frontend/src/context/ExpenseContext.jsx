@@ -10,7 +10,7 @@ export const ExpenseProvider = ({ children }) => {
           setExpenseLoading(true);
 
           try {
-               const response = await fetch("http://localhost:1500/expense/get", {
+               const response = await fetch("https://spend-analyzer-five.vercel.app/expense/get", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"
