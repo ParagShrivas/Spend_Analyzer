@@ -13,7 +13,11 @@ const contactRoutes = require("./routes/contactRoutes");
 const app = express();
 
 const isProduction = process.env.NODE_ENV === "production";
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:3000"].filter(Boolean);
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "https://spend-analyzer-five.vercel.app",
+  "http://localhost:3000"
+].filter(Boolean);
 
 /* Required when hosting behind Render, Railway, Nginx, etc. */
 if (isProduction) {
