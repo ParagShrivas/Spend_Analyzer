@@ -15,7 +15,7 @@ const app = express();
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const allowedOrigins = [process.env.CLIENT_URL , "http://localhost:3000"]
+const allowedOrigins = [process.env.CLIENT_URL , "http://localhost:3000"].filter(Boolean);
 
 /* Required when hosting behind Render, Railway, Nginx, etc. */
 if (isProduction) {
