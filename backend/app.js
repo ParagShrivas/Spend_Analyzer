@@ -62,8 +62,17 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-/* Handle OPTIONS preflight requests globally */
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
+
+// Manual preflight handler — replaces app.options("*")
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://spend-analyzer-five.vercel.app");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") return res.status(200).end();
+  next();
+});
 
 /* Stronger protection for login, register, OTP, reset password */
 const authLimiter = rateLimit({
