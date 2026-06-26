@@ -13,11 +13,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const app = express();
 
 const isProduction = process.env.NODE_ENV === "production";
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "https://spend-analyzer-five.vercel.app",
-  "http://localhost:3000"
-].filter(Boolean);
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:3000"].filter(Boolean);
 
 /* Required when hosting behind Render, Railway, Nginx, etc. */
 if (isProduction) {
@@ -62,17 +58,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(cors(corsOptions));
-
-// Manual preflight handler — replaces app.options("*")
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://spend-analyzer-five.vercel.app");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  if (req.method === "OPTIONS") return res.status(200).end();
-  next();
-});
+/* Handle OPTIONS preflight requests globally */
+app.options("/{*path}", cors(corsOptions));
 
 /* Stronger protection for login, register, OTP, reset password */
 const authLimiter = rateLimit({
