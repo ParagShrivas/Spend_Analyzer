@@ -60,7 +60,7 @@ export default function Profile() {
     const fetchProfile = async () => {
         try {
             const response = await fetch(
-                "https://spend-analyzer-five.vercel.app/user/profile",
+                "https://spend-analyzer-jg2g.onrender.com/user/profile",
                 {
                     method: "GET",
                     headers: {
@@ -85,7 +85,7 @@ export default function Profile() {
     const fetchNotifications = async () => {
         try {
             const response = await fetch(
-                "https://spend-analyzer-five.vercel.app/notification/get",
+                "https://spend-analyzer-jg2g.onrender.com/notification/get",
                 {
                     method: "GET",
                     headers: {
@@ -110,7 +110,7 @@ export default function Profile() {
     const fetchBudget = async () => {
         try {
             const response = await fetch(
-                "https://spend-analyzer-five.vercel.app/budget/get",
+                "https://spend-analyzer-jg2g.onrender.com/budget/get",
                 {
                     method: "GET",
                     headers: {
@@ -293,7 +293,7 @@ export default function Profile() {
         try {
             setPasswordLoading(true);
 
-            const response = await fetch(`https://spend-analyzer-five.vercel.app/user/password`, {
+            const response = await fetch(`https://spend-analyzer-jg2g.onrender.com/user/password`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -350,7 +350,7 @@ export default function Profile() {
             setProfileEditLoading(true);
 
             const response = await fetch(
-                "https://spend-analyzer-five.vercel.app/user/profile",
+                "https://spend-analyzer-jg2g.onrender.com/user/profile",
                 {
                     method: "PUT",
                     headers: {
@@ -389,7 +389,7 @@ export default function Profile() {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch("https://spend-analyzer-five.vercel.app/user/logout", {
+            const response = await fetch("https://spend-analyzer-jg2g.onrender.com/user/logout", {
                 method: "POST",
                 credentials: "include"
             });

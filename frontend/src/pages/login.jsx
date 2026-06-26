@@ -7,7 +7,7 @@ import { useLogin } from "../context/LoginContext";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
-const API_URL = "https://spend-analyzer-five.vercel.app/user";
+const API_URL = "https://spend-analyzer-jg2g.onrender.com/user";
 
 const Login = () => {
      const { user, checkingLogin, setUser } = useLogin();

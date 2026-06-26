@@ -227,7 +227,7 @@ node server.js
 Backend runs on:
 
 
-https://spend-analyzer-five.vercel.app
+https://spend-analyzer-jg2g.onrender.com
 
 
 ### Start Frontend

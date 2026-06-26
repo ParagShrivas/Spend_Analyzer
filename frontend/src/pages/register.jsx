@@ -42,7 +42,7 @@ const Register = () => {
           setLoading(true);
           try {
                // API call to register the user
-               const response = await fetch("https://spend-analyzer-five.vercel.app/user/register", {
+               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/user/register", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"

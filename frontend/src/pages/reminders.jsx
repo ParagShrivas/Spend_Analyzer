@@ -120,7 +120,7 @@ export default function Reminders() {
           if (showLoader) setPageLoading(true);
 
           try {
-               const response = await fetch("https://spend-analyzer-five.vercel.app/notification/get", {
+               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/notification/get", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"
@@ -145,7 +145,7 @@ export default function Reminders() {
 
      const fetchUpcomingNotifications = async () => {
           try {
-               const response = await fetch("https://spend-analyzer-five.vercel.app/notification/upcoming", {
+               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/notification/upcoming", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"
@@ -209,7 +209,7 @@ export default function Reminders() {
           setSubmitting(true);
 
           try {
-               const response = await fetch("https://spend-analyzer-five.vercel.app/notification/add", {
+               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/notification/add", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"
@@ -260,7 +260,7 @@ export default function Reminders() {
           setActionLoadingId(id);
 
           try {
-               const response = await fetch(`https://spend-analyzer-five.vercel.app/notification/read/${id}`, {
+               const response = await fetch(`https://spend-analyzer-jg2g.onrender.com/notification/read/${id}`, {
                     method: "PUT",
                     headers: {
                          "Content-Type": "application/json"
@@ -306,7 +306,7 @@ export default function Reminders() {
           setActionLoadingId(deleteItemId);
 
           try {
-               const response = await fetch(`https://spend-analyzer-five.vercel.app/notification/delete/${deleteItemId}`, {
+               const response = await fetch(`https://spend-analyzer-jg2g.onrender.com/notification/delete/${deleteItemId}`, {
                     method: "DELETE",
                     headers: {
                          "Content-Type": "application/json"

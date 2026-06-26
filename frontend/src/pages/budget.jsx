@@ -90,7 +90,7 @@ export default function Budget() {
      // fetch budget
      const fetchBudget = async () => {
           try {
-               const response = await fetch("https://spend-analyzer-five.vercel.app/budget/get", {
+               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/budget/get", {
                     method: 'GET',
                     headers: {
                          "Content-Type": "application/json"
@@ -132,7 +132,7 @@ export default function Budget() {
           }
 
           try {
-               const response = await fetch("https://spend-analyzer-five.vercel.app/budget/update", {
+               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/budget/update", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"
