@@ -15,10 +15,7 @@ const app = express();
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const allowedOrigins = ("https://spend-analyzer-five.vercel.app"|| "http://localhost:3000")
-     .split(",")
-     .map((url) => url.trim())
-     .filter(Boolean);
+const allowedOrigins = [process.env.CLIENT_URL , "http://localhost:3000"]
 
 /* Required when hosting behind Render, Railway, Nginx, etc. */
 if (isProduction) {
