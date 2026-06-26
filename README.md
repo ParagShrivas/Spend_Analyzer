@@ -227,7 +227,7 @@ node server.js
 Backend runs on:
 
 
-https://spend-analyzer-jg2g.onrender.com
+https://spendanalyzer-production-37c5.up.railway.app
 
 
 ### Start Frontend

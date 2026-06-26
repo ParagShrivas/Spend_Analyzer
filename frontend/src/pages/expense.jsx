@@ -224,8 +224,8 @@ export default function Expense() {
           setLoading(true);
 
           const url = isEditing
-               ? `https://spend-analyzer-jg2g.onrender.com/expense/update/${editExpenseId}`
-               : "https://spend-analyzer-jg2g.onrender.com/expense/add";
+               ? `https://spendanalyzer-production-37c5.up.railway.app/expense/update/${editExpenseId}`
+               : "https://spendanalyzer-production-37c5.up.railway.app/expense/add";
 
           const method = isEditing ? "PUT" : "POST";
 
@@ -285,7 +285,7 @@ export default function Expense() {
           setShowDeleteOverlay(false);
 
           try {
-               const response = await fetch(`https://spend-analyzer-jg2g.onrender.com/expense/delete/${selectedExpenseId}`, {
+               const response = await fetch(`https://spendanalyzer-production-37c5.up.railway.app/expense/delete/${selectedExpenseId}`, {
                     method: "DELETE",
                     headers: {
                          "Content-Type": "application/json"

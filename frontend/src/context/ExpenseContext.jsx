@@ -10,7 +10,7 @@ export const ExpenseProvider = ({ children }) => {
           setExpenseLoading(true);
 
           try {
-               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/expense/get", {
+               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/expense/get", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"

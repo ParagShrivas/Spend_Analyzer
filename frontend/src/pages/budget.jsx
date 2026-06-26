@@ -90,7 +90,7 @@ export default function Budget() {
      // fetch budget
      const fetchBudget = async () => {
           try {
-               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/budget/get", {
+               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/budget/get", {
                     method: 'GET',
                     headers: {
                          "Content-Type": "application/json"
@@ -132,7 +132,7 @@ export default function Budget() {
           }
 
           try {
-               const response = await fetch("https://spend-analyzer-jg2g.onrender.com/budget/update", {
+               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/budget/update", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"
