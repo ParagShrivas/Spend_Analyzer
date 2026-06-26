@@ -13,12 +13,9 @@ const contactRoutes = require("./routes/contactRoutes");
 const app = express();
 
 const isProduction = process.env.NODE_ENV === "production";
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "https://spend-analyzer-five.vercel.app",
-  "http://localhost:3000"
-].filter(Boolean);
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:3000"].filter(Boolean);
 
+/* Required when hosting behind Render, Railway, Nginx, etc. */
 if (isProduction) {
   app.set("trust proxy", 1);
 }
@@ -39,21 +36,12 @@ app.use(
 
 app.use(cookieParser());
 
-/* Manual CORS + preflight handler — must be before everything else */
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin || "*");
-  }
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  if (req.method === "OPTIONS") return res.status(200).end();
-  next();
-});
-
 const corsOptions = {
   origin: (origin, callback) => {
+    /*
+      Allows Postman, server health checks, and same-origin requests
+      that do not send an Origin header.
+    */
     if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
@@ -70,7 +58,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-/* Rate limiters */
+/* Handle OPTIONS preflight requests globally */
+app.options("/{*path}", cors(corsOptions));
+
+/* Stronger protection for login, register, OTP, reset password */
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 25,
@@ -81,6 +72,7 @@ const authLimiter = rateLimit({
   },
 });
 
+/* General request protection */
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 300,
@@ -91,6 +83,7 @@ const apiLimiter = rateLimit({
   },
 });
 
+/* Prevent contact form spam */
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
@@ -101,7 +94,6 @@ const contactLimiter = rateLimit({
   },
 });
 
-/* Health check */
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -109,19 +101,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-/* Test endpoint */
-app.get("/test", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Test endpoint working",
-    environment: process.env.NODE_ENV,
-    clientUrl: process.env.CLIENT_URL,
-    allowedOrigins,
-    timestamp: new Date().toISOString(),
-  });
-});
-
-/* Routes */
+/* Routes — each group gets its own limiter, no double counting */
 app.use("/user", authLimiter, userRoutes);
 app.use("/expense", apiLimiter, expenseRoutes);
 app.use("/budget", apiLimiter, budgetRoutes);
