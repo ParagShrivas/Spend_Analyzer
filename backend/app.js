@@ -59,7 +59,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 /* Handle OPTIONS preflight requests globally */
-app.options("*", cors(corsOptions));
+app.options("/{*path}", cors(corsOptions));
 
 /* Stronger protection for login, register, OTP, reset password */
 const authLimiter = rateLimit({
