@@ -1,4 +1,17 @@
+const dns = require("dns");
 const nodemailer = require("nodemailer");
+
+// Force Node.js to prefer IPv4 over IPv6
+dns.setDefaultResultOrder("ipv4first");
+
+// Check what Gmail resolves to on Railway
+dns.lookup("smtp.gmail.com", { all: true }, (err, addresses) => {
+     if (err) {
+          console.error("DNS Lookup Error:", err);
+     } else {
+          console.log("SMTP DNS:", addresses);
+     }
+});
 
 const transporter = nodemailer.createTransport({
      host: process.env.MAIL_HOST,
