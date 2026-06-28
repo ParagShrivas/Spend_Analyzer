@@ -14,6 +14,21 @@ const transporter = nodemailer.createTransport({
      socketTimeout: 30000,
 });
 
+console.log({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS ? "Loaded" : "Missing"
+});
+
+transporter.verify((error, success) => {
+    if (error) {
+        console.error("SMTP Verify Error:", error);
+    } else {
+        console.log("SMTP Server is ready");
+    }
+});
+
 const sendMail = async ({ to, subject, html }) => {
      try {
           const info = await transporter.sendMail({
