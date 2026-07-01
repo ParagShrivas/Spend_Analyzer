@@ -227,7 +227,7 @@ node server.js
 Backend runs on:
 
 
-https://spendanalyzer-production-37c5.up.railway.app
+http://localhost:1500
 
 
 ### Start Frontend

@@ -10,7 +10,7 @@ export const ExpenseProvider = ({ children }) => {
           setExpenseLoading(true);
 
           try {
-               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/expense/get", {
+               const response = await fetch("http://localhost:1500/expense/get", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"

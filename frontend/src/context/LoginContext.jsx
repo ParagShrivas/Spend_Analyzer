@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const LoginContext = createContext();
 
-const API_URL = "https://spendanalyzer-production-37c5.up.railway.app/user";
+const API_URL = "http://localhost:1500/user";
 
 export function LoginProvider({ children }) {
      const navigate = useNavigate();

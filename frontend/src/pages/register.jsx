@@ -42,7 +42,7 @@ const Register = () => {
           setLoading(true);
           try {
                // API call to register the user
-               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/user/register", {
+               const response = await fetch("http://localhost:1500/user/register", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"

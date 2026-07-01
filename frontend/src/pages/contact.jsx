@@ -5,7 +5,7 @@ import Footer from "../components/footer";
 import Toast from "../components/toast";
 import "../css/contact.css";
 
-const API_URL = "https://spendanalyzer-production-37c5.up.railway.app/contact";
+const API_URL = "http://localhost:1500/contact";
 
 export default function Contact() {
     const navigate = useNavigate();

@@ -112,7 +112,7 @@ const Dashboard = () => {
      // fetch notifications
      const fetchNotifications = async () => {
           try {
-               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/notification/get", {
+               const response = await fetch("http://localhost:1500/notification/get", {
                     method: "GET",
                     headers: {
                          "Content-Type": "application/json"
@@ -138,7 +138,7 @@ const Dashboard = () => {
 
           setLoading(true);
           try {
-               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/expense/add", {
+               const response = await fetch("http://localhost:1500/expense/add", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json"
@@ -186,7 +186,7 @@ const Dashboard = () => {
 
           setShowDeleteOverlay(false);
           try {
-               const response = await fetch(`https://spendanalyzer-production-37c5.up.railway.app/expense/delete/${selectedExpenseId}`, {
+               const response = await fetch(`http://localhost:1500/expense/delete/${selectedExpenseId}`, {
                     method: "DELETE",
                     headers: {
                          "Content-Type": "application/json"
@@ -217,7 +217,7 @@ const Dashboard = () => {
      // fetch budget
      const fetchBudget = async () => {
           try {
-               const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/budget/get", {
+               const response = await fetch("http://localhost:1500/budget/get", {
                     method: 'GET',
                     headers: {
                          "Content-Type": "application/json"
@@ -258,7 +258,7 @@ const Dashboard = () => {
           "Groceries": "#84cc16",
           "Salary": "#14b8a6",
           "Investment": "#6366f1",
-          "Other": "#048fab"
+          "Other": "#31e2b6"
      };
 
      // monthly expense 
@@ -452,7 +452,7 @@ const Dashboard = () => {
           setLoading(true);
 
           try {
-               const response = await fetch(`https://spendanalyzer-production-37c5.up.railway.app/expense/update/${editExpenseId}`, {
+               const response = await fetch(`http://localhost:1500/expense/update/${editExpenseId}`, {
                     method: "PUT",
                     headers: {
                          "Content-Type": "application/json"

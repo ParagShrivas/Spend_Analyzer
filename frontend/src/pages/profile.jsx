@@ -60,7 +60,7 @@ export default function Profile() {
     const fetchProfile = async () => {
         try {
             const response = await fetch(
-                "https://spendanalyzer-production-37c5.up.railway.app/user/profile",
+                "http://localhost:1500/user/profile",
                 {
                     method: "GET",
                     headers: {
@@ -85,7 +85,7 @@ export default function Profile() {
     const fetchNotifications = async () => {
         try {
             const response = await fetch(
-                "https://spendanalyzer-production-37c5.up.railway.app/notification/get",
+                "http://localhost:1500/notification/get",
                 {
                     method: "GET",
                     headers: {
@@ -110,7 +110,7 @@ export default function Profile() {
     const fetchBudget = async () => {
         try {
             const response = await fetch(
-                "https://spendanalyzer-production-37c5.up.railway.app/budget/get",
+                "http://localhost:1500/budget/get",
                 {
                     method: "GET",
                     headers: {
@@ -293,7 +293,7 @@ export default function Profile() {
         try {
             setPasswordLoading(true);
 
-            const response = await fetch(`https://spendanalyzer-production-37c5.up.railway.app/user/password`, {
+            const response = await fetch(`http://localhost:1500/user/password`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -350,7 +350,7 @@ export default function Profile() {
             setProfileEditLoading(true);
 
             const response = await fetch(
-                "https://spendanalyzer-production-37c5.up.railway.app/user/profile",
+                "http://localhost:1500/user/profile",
                 {
                     method: "PUT",
                     headers: {
@@ -389,7 +389,7 @@ export default function Profile() {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch("https://spendanalyzer-production-37c5.up.railway.app/user/logout", {
+            const response = await fetch("http://localhost:1500/user/logout", {
                 method: "POST",
                 credentials: "include"
             });
